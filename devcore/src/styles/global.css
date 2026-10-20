@@ -123,8 +123,9 @@ img.px,
 }
 
 .frame-parchment {
-  border-image: url('/assets/ui/frame_parchment.png') 8 fill / 16px repeat;
+  /* o shorthand "border" zera o border-image, por isso vem antes */
   border: 16px solid transparent;
+  border-image: url('/assets/ui/frame_parchment.png') 8 fill / 16px repeat;
   image-rendering: pixelated;
   color: var(--ink);
 }
