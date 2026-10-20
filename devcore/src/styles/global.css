@@ -105,7 +105,7 @@ img.px,
 /* ---------- molduras pixel (9-slice) ---------- */
 .frame-dialog {
   border: calc(var(--frame-px, 3px) * 8) solid transparent;
-  border-image: url('/assets/ui/frame_dialog.png') 8 fill / auto stretch;
+  border-image: url('/assets/ui/frame_dialog.png') 8 fill / 1 stretch;
   image-rendering: pixelated;
   color: var(--ink);
 }
@@ -306,6 +306,39 @@ img.px,
 }
 .rarity-legendary {
   color: var(--amber);
+}
+
+.toasts {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px;
+  background: var(--navy-d);
+  border: 3px solid var(--gold);
+  color: var(--cream);
+  box-shadow: 0 4px 0 var(--black);
+  font-size: 22px;
+}
+
+.toast-reward {
+  border-color: var(--amber);
+  color: var(--gold-l);
+}
+
+.toast-error {
+  border-color: var(--red);
 }
 
 @keyframes blink {

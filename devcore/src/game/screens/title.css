@@ -1,0 +1,71 @@
+.title-logo {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--px) * 18);
+  width: calc(var(--px) * 180);
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: drop-shadow(0 calc(var(--px) * 2) 0 rgba(0, 0, 0, 0.6));
+}
+
+.title-sub {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--px) * 58);
+  margin: 0;
+  text-align: center;
+  font-size: calc(var(--px) * 9);
+  color: var(--cream-d);
+  text-shadow: calc(var(--px) * 0.5) calc(var(--px) * 0.5) 0 var(--black);
+  pointer-events: none;
+}
+
+.title-press {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--px) * 120);
+  transform: translateX(-50%);
+  background: none;
+  border: 0;
+  color: var(--gold-l);
+  font-size: calc(var(--px) * 11);
+  text-shadow: calc(var(--px) * 0.5) calc(var(--px) * 0.5) 0 var(--black);
+  animation: blink 1.1s steps(1) infinite;
+  cursor: pointer;
+}
+
+.title-menu {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--px) * 76);
+  transform: translateX(-50%);
+  min-width: calc(var(--px) * 110);
+  border-width: calc(var(--px) * 4);
+  border-image-width: calc(var(--px) * 4);
+}
+
+.title-menu .menu-item {
+  font-size: calc(var(--px) * 10);
+  padding: calc(var(--px) * 0.6) calc(var(--px) * 3) calc(var(--px) * 0.6) calc(var(--px) * 9);
+}
+
+.title-menu .menu-item::before {
+  width: calc(var(--px) * 4);
+  height: calc(var(--px) * 7);
+  left: calc(var(--px) * 2);
+}
+
+.title-menu .menu-item .hint {
+  font-size: calc(var(--px) * 7);
+}
+
+.title-footer {
+  position: absolute;
+  bottom: calc(var(--px) * 2);
+  right: calc(var(--px) * 4);
+  margin: 0;
+  font-size: calc(var(--px) * 6);
+  color: var(--navy-l);
+  pointer-events: none;
+}

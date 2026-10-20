@@ -1,0 +1,112 @@
+.dialog {
+  position: absolute;
+  z-index: 20;
+}
+
+/* Dentro do palco: medidas em px virtuais (var(--px)). */
+.dialog-stage {
+  left: calc(var(--px) * 4);
+  right: calc(var(--px) * 4);
+  bottom: calc(var(--px) * 4);
+  --frame-px: calc(var(--px) * 0.5);
+  font-size: calc(var(--px) * 10);
+}
+
+.dialog-panel {
+  position: relative;
+  --frame-px: 2px;
+  font-size: 24px;
+}
+
+.dialog-box {
+  position: relative;
+  display: flex;
+  gap: 0.5em;
+  min-height: 3.6em;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dialog-stage .dialog-box {
+  min-height: calc(var(--px) * 46);
+}
+
+.dialog-name {
+  position: absolute;
+  left: 0.6em;
+  top: -1.15em;
+  z-index: 2;
+  padding: 0.05em 0.6em 0.1em;
+  background: var(--navy);
+  color: var(--gold-l);
+  border: max(2px, calc(var(--frame-px) * 2)) solid var(--gold);
+  border-bottom: none;
+  font-size: 0.85em;
+  line-height: 1.05;
+  text-shadow: 1px 1px 0 var(--black);
+}
+
+.dialog-panel .dialog-name {
+  position: relative;
+  display: inline-block;
+  top: 0;
+  left: 0.6em;
+}
+
+.dialog-portrait {
+  flex: none;
+  width: 3.4em;
+  height: 3.4em;
+  align-self: center;
+  background: var(--cream-d);
+  border: max(2px, calc(var(--frame-px) * 2)) solid var(--navy);
+}
+
+.dialog-text {
+  margin: 0;
+  flex: 1;
+  color: var(--ink);
+  line-height: 1.12;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.dialog-ghost {
+  visibility: hidden;
+}
+
+.dialog-arrow {
+  position: absolute;
+  right: 0.2em;
+  bottom: 0;
+  width: 0.7em;
+  height: auto;
+  animation: blink 0.8s steps(1) infinite;
+}
+
+.dialog-choices {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.3em);
+  min-width: 40%;
+  padding: 0;
+}
+
+.dialog-panel .dialog-choices {
+  position: static;
+  margin-top: 8px;
+  width: fit-content;
+  margin-left: auto;
+}
+
+.dialog-choices .menu-item {
+  font-size: 1em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  color: var(--ink);
+}
+
+.dialog-choices .menu-item[aria-current='true'] {
+  color: var(--navy);
+  background: rgba(232, 184, 74, 0.35);
+}

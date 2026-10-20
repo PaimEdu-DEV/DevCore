@@ -1,0 +1,16 @@
+.cutscene-skip {
+  position: absolute;
+  top: calc(var(--px) * 4);
+  right: calc(var(--px) * 4);
+  padding: 0 calc(var(--px) * 3);
+  font-size: calc(var(--px) * 7);
+  background: rgba(10, 10, 15, 0.6);
+  color: var(--cream);
+  border: max(1px, calc(var(--px) * 0.5)) solid var(--gold-d);
+  cursor: pointer;
+  z-index: 30;
+}
+
+.cutscene-skip:hover {
+  color: var(--gold-l);
+}
