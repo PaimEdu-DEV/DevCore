@@ -1,14 +1,24 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { game, useGame, useReducedMotion } from './game/state/store';
 import { TitleScreen } from './game/screens/TitleScreen';
 import { CreationScreen } from './game/screens/CreationScreen';
 import { CutsceneScreen } from './game/screens/CutsceneScreen';
 import { OptionsScreen } from './game/screens/OptionsScreen';
 import { CreditsScreen } from './game/screens/CreditsScreen';
-import { LessonScreen } from './game/screens/LessonScreen';
 import { TrainingScreen } from './game/screens/TrainingScreen';
+import { VillageScreen } from './game/screens/VillageScreen';
+import { ShopScreen, CosmeticsScreen } from './game/screens/ShopScreen';
+import { ProfileScreen, MissionsScreen } from './game/screens/ProfileScreen';
+import { ScrollScreen } from './game/screens/ScrollScreen';
+import { BossSelectScreen } from './game/screens/BossSelectScreen';
+import { dailyChallenge, todayKey } from './game/data/challenges';
 import { assetUrl } from './game/assets/sprites';
 import { audio } from './game/audio/AudioManager';
+
+// Telas com editor de código (CodeMirror) são carregadas sob demanda.
+const LessonScreen = lazy(() => import('./game/screens/LessonScreen').then((m) => ({ default: m.LessonScreen })));
+const LightningScreen = lazy(() => import('./game/screens/LightningScreen').then((m) => ({ default: m.LightningScreen })));
+const BattleScreen = lazy(() => import('./game/screens/BattleScreen').then((m) => ({ default: m.BattleScreen })));
 
 function Toasts() {
   const toasts = useGame((s) => s.toasts);
@@ -24,13 +34,10 @@ function Toasts() {
   );
 }
 
-function Placeholder({ title }: { title: string }) {
+function Loading() {
   return (
     <main className="screen center">
-      <div className="frame-panel col" style={{ alignItems: 'center' }}>
-        <p>{title}: em construção.</p>
-        <button className="btn primary" onClick={() => game.navigate({ name: 'title' })} autoFocus>Voltar ao título</button>
-      </div>
+      <p className="muted">Carregando...</p>
     </main>
   );
 }
@@ -71,19 +78,47 @@ export function App() {
     case 'credits':
       screen = <CreditsScreen />;
       break;
+    case 'village':
+      screen = <VillageScreen />;
+      break;
     case 'lesson':
       screen = <LessonScreen key={route.challengeId} challengeId={route.challengeId} back={route.back} />;
+      break;
+    case 'daily':
+      screen = <LessonScreen key="daily" challengeId={dailyChallenge(todayKey()).id} back={{ name: 'village' }} mode="daily" />;
       break;
     case 'training':
       screen = <TrainingScreen back={route.back} />;
       break;
-    default:
-      screen = <Placeholder title={route.name} />;
+    case 'shop':
+      screen = <ShopScreen />;
+      break;
+    case 'cosmetics':
+      screen = <CosmeticsScreen back={route.back} />;
+      break;
+    case 'profile':
+      screen = <ProfileScreen back={route.back} />;
+      break;
+    case 'missions':
+      screen = <MissionsScreen back={route.back} />;
+      break;
+    case 'scroll':
+      screen = <ScrollScreen back={route.back} />;
+      break;
+    case 'bossSelect':
+      screen = <BossSelectScreen />;
+      break;
+    case 'lightning':
+      screen = <LightningScreen />;
+      break;
+    case 'battle':
+      screen = <BattleScreen key={route.villain} villain={route.villain} />;
+      break;
   }
 
   return (
     <>
-      {screen}
+      <Suspense fallback={<Loading />}>{screen}</Suspense>
       <Toasts />
     </>
   );

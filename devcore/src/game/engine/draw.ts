@@ -110,7 +110,7 @@ export function drawHero(
   if (aura && aura.category === 'aura' && !opts.tint) {
     const img = getImage(aura.image);
     if (img) {
-      const pulse = 0.75 + Math.sin(elapsedMs / 300) * 0.15;
+      const pulse = 0.5 + Math.sin(elapsedMs / 300) * 0.12;
       ctx.save();
       ctx.globalAlpha *= pulse * (opts.alpha ?? 1);
       ctx.drawImage(img, Math.round(feetX - (img.width * scale) / 2), Math.round(feetY - img.height * scale + 6 * scale), img.width * scale, img.height * scale);

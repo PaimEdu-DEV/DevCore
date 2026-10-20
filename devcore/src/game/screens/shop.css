@@ -1,0 +1,41 @@
+.shop-card {
+  min-height: 250px;
+}
+
+.shop-preview {
+  min-height: 116px;
+  display: grid;
+  place-items: center;
+  background: rgba(30, 42, 74, 0.45);
+  border: 2px solid var(--navy-l);
+}
+
+.spell-swatch {
+  display: flex;
+  gap: 10px;
+}
+
+.spell-dot {
+  width: 18px;
+  height: 18px;
+  box-shadow: 0 0 0 3px var(--black);
+  animation: bob 0.9s steps(2) infinite;
+}
+
+.spell-dot.spell-orb {
+  border-radius: 50%;
+}
+
+.spell-dot.spell-star {
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+}
+
+.spell-dot.spell-ember {
+  clip-path: polygon(50% 0, 100% 60%, 50% 100%, 0 60%);
+}
+
+.title-preview {
+  color: var(--amber);
+  font-size: 26px;
+  text-align: center;
+}

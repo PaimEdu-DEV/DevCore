@@ -30,6 +30,7 @@
     "@lezer/highlight": "^1.2.5",
     "acorn": "^8.19.0",
     "codemirror": "^6.0.2",
+    "firebase": "^13.0.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

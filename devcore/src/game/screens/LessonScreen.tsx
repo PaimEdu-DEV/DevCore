@@ -3,7 +3,7 @@ import { IdePanel } from '../../ide/IdePanel';
 import { ChallengeBrief } from '../../ide/ChallengeBrief';
 import { DialogBox } from '../ui/DialogBox';
 import { fillText } from '../ui/hooks';
-import { getChallenge, lessonsFor, localize } from '../data/challenges';
+import { getChallenge, lessonsFor, localize, todayKey } from '../data/challenges';
 import { mentorFeedback } from '../../runner/errorTranslator';
 import { game, useGame, type Route } from '../state/store';
 import { languageOf } from '../state/save';
@@ -15,23 +15,46 @@ import type { RunResult } from '../../runner';
 import './lesson.css';
 
 /** Treino com o Orwin: enunciado + IDE + mentor que comenta cada execução. */
-export function LessonScreen({ challengeId, back }: { challengeId: string; back: Route }) {
+export function LessonScreen({ challengeId, back, mode = 'lesson' }: { challengeId: string; back: Route; mode?: 'lesson' | 'daily' }) {
   const save = useGame((s) => s.save);
   const challenge = useMemo(() => getChallenge(challengeId), [challengeId]);
   const language = save ? languageOf(save.player.heroClass) : 'python';
   const [hintsUsed, setHintsUsed] = useState(0);
   const [errors, setErrors] = useState(0);
   const [solved, setSolved] = useState(false);
-  const [mentor, setMentor] = useState<string>(() => (challenge.kind === 'extra' ? 'Desafio rápido. Leia com calma e mostre o que sabe.' : 'Leia o enunciado com calma. Quando quiser testar, aperte ▶ Executar. Errar aqui não custa nada.'));
+  const [mentor, setMentor] = useState<string>(() =>
+    mode === 'daily'
+      ? 'A Elowen pendurou este no quadro hoje. Sem pressa: vale o dia inteiro, e amanhã tem outro.'
+      : 'Leia o enunciado com calma. Quando quiser testar, aperte ▶ Executar. Errar aqui não custa nada.',
+  );
   const vars = { name: save?.player.name, heroClass: save?.player.heroClass ?? null };
 
   if (!save) return null;
 
-  const siblings = challenge.villain ? lessonsFor(challenge.villain) : [];
+  const siblings = challenge.villain && mode === 'lesson' ? lessonsFor(challenge.villain) : [];
   const next = siblings[siblings.findIndex((c) => c.id === challenge.id) + 1];
+  const today = todayKey();
 
   const onResult = (r: RunResult) => {
     recordRun(r.tests.filter((t) => t.ok).length, !!r.error);
+    if (r.passed && solved) {
+      setMentor('Continua certo. Pode seguir em frente!');
+      return;
+    }
+    if (r.passed && mode === 'daily') {
+      audio.play('success');
+      setSolved(true);
+      const first = !save.daily.completed[today];
+      setMentor(first ? 'Caçada do dia concluída! A Elowen vai ficar orgulhosa. Volte amanhã para o próximo.' : 'Já tinha caçado este hoje, mas treino nunca é demais.');
+      if (first) {
+        grant(challenge.xp * 1.5, challenge.coins * 2, 'Desafio diário', (d) => {
+          d.daily.completed[today] = challenge.id;
+          d.stats.dailyDone += 1;
+        });
+        if (save.stats.dailyDone + 1 >= 3) awardTitle('daily', EARNED_TITLES.daily);
+      }
+      return;
+    }
     if (r.passed) {
       audio.play('success');
       setSolved(true);
@@ -69,7 +92,7 @@ export function LessonScreen({ challengeId, back }: { challengeId: string; back:
     <main className="screen lesson">
       <header className="lesson-head">
         <button className="btn small" onClick={() => game.navigate(back)}>◀ Voltar</button>
-        <h1 className="lesson-title">{challenge.kind === 'extra' ? 'Desafio' : 'Treino com Orwin'}</h1>
+        <h1 className="lesson-title">{mode === 'daily' ? 'Desafio diário da Elowen' : challenge.kind === 'extra' ? 'Desafio' : 'Treino com Orwin'}</h1>
         <span className="lesson-coins">
           <img src={assetUrl('assets/icons/coin.png')} alt="Moedas" className="icon sm px" /> {save.stats.coins}
         </span>

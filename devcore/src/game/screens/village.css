@@ -1,0 +1,150 @@
+.village-hud {
+  position: absolute;
+  top: calc(var(--px) * 3);
+  left: calc(var(--px) * 3);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: calc(var(--px) * 1) calc(var(--px) * 5);
+  padding: calc(var(--px) * 1) calc(var(--px) * 4);
+  background: rgba(18, 26, 48, 0.85);
+  border: calc(var(--px) * 0.75) solid var(--gold);
+  font-size: calc(var(--px) * 8);
+  color: var(--cream);
+  pointer-events: none;
+  max-width: 70%;
+}
+
+.village-name {
+  color: var(--gold-l);
+}
+
+.village-coins {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--px) * 1.5);
+}
+
+.village-coins img {
+  width: calc(var(--px) * 8);
+  height: calc(var(--px) * 8);
+}
+
+.village-title {
+  color: var(--amber);
+  font-size: calc(var(--px) * 7);
+}
+
+.village-menu-btn {
+  position: absolute;
+  top: calc(var(--px) * 3);
+  right: calc(var(--px) * 3);
+  padding: 0 calc(var(--px) * 4);
+  font-size: calc(var(--px) * 8);
+  background: rgba(18, 26, 48, 0.85);
+  color: var(--cream);
+  border: calc(var(--px) * 0.75) solid var(--gold);
+  cursor: pointer;
+}
+
+.village-menu-btn:hover {
+  color: var(--gold-l);
+}
+
+.village-hint {
+  position: absolute;
+  bottom: calc(var(--px) * 4);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 calc(var(--px) * 4);
+  background: rgba(10, 10, 15, 0.75);
+  border: calc(var(--px) * 0.5) solid var(--gold-d);
+  font-size: calc(var(--px) * 8);
+  color: var(--gold-l);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.game-menu {
+  position: absolute;
+  top: calc(var(--px) * 16);
+  right: calc(var(--px) * 3);
+  border-width: calc(var(--px) * 4);
+  border-image-width: calc(var(--px) * 4);
+  z-index: 40;
+}
+
+.game-menu .menu-item {
+  font-size: calc(var(--px) * 9);
+  padding: calc(var(--px) * 0.3) calc(var(--px) * 4) calc(var(--px) * 0.3) calc(var(--px) * 8);
+}
+
+.game-menu .menu-item::before {
+  width: calc(var(--px) * 3.5);
+  height: calc(var(--px) * 6);
+  left: calc(var(--px) * 2);
+}
+
+/* D-pad virtual: aparece em telas de toque ou estreitas */
+.dpad {
+  display: none;
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  height: 150px;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.dpad button {
+  pointer-events: auto;
+  position: absolute;
+  width: 54px;
+  height: 54px;
+  background: rgba(18, 26, 48, 0.8);
+  border: 3px solid var(--gold);
+  color: var(--cream);
+  font-size: 22px;
+  touch-action: none;
+  user-select: none;
+}
+
+.dpad-up {
+  left: 54px;
+  top: 0;
+}
+.dpad-down {
+  left: 54px;
+  top: 96px;
+}
+.dpad-left {
+  left: 0;
+  top: 48px;
+}
+.dpad-right {
+  left: 108px;
+  top: 48px;
+}
+
+.dpad .dpad-a {
+  right: 8px;
+  top: 40px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--gold-d);
+  font-size: 28px;
+}
+
+@media (pointer: coarse), (max-width: 760px) {
+  .dpad {
+    display: block;
+  }
+
+  .village .pixel-stage-wrap {
+    align-items: start;
+    padding-top: 8px;
+    height: calc(100% - 170px);
+  }
+}

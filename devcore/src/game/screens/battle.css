@@ -1,0 +1,289 @@
+.battle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px;
+  background: #0d0e13;
+  overflow: hidden;
+}
+
+.battle-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  overflow: auto;
+}
+
+.battle-stage {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  flex: none;
+  border: 4px solid var(--gold-d);
+  box-shadow: 0 0 0 2px var(--black);
+  background: var(--black);
+}
+
+.battle-right {
+  min-height: 0;
+  display: flex;
+}
+
+.battle-right .ide {
+  flex: 1;
+}
+
+.battle-brief {
+  flex: 1 0 auto;
+}
+
+.battle-mechanic {
+  font-family: var(--font-text);
+  font-size: 14px;
+  color: var(--lime-l);
+  background: rgba(47, 107, 0, 0.18);
+  border: 2px solid var(--lime-d);
+  padding: 6px 10px;
+}
+
+.battle .dialog-panel {
+  font-size: 22px;
+}
+
+/* Caixas de vida estilo Pokémon */
+.hpbox {
+  position: absolute;
+  padding: calc(var(--px) * 2) calc(var(--px) * 4);
+  background: var(--cream);
+  color: var(--ink);
+  border: calc(var(--px) * 1) solid var(--navy-d);
+  box-shadow: inset 0 0 0 calc(var(--px) * 0.75) var(--gold-d);
+  font-size: calc(var(--px) * 8);
+  line-height: 1;
+  min-width: calc(var(--px) * 108);
+}
+
+.hpbox-foe {
+  top: calc(var(--px) * 6);
+  left: calc(var(--px) * 6);
+  border-bottom-right-radius: calc(var(--px) * 6);
+}
+
+.hpbox-hero {
+  right: calc(var(--px) * 6);
+  bottom: calc(var(--px) * 6);
+  border-top-left-radius: calc(var(--px) * 6);
+}
+
+.hpbox-name {
+  display: flex;
+  justify-content: space-between;
+  gap: calc(var(--px) * 4);
+}
+
+.hpbox-sub {
+  color: var(--navy-l);
+}
+
+.hpbox-num {
+  text-align: right;
+  font-size: calc(var(--px) * 7);
+  margin-top: calc(var(--px) * 1);
+}
+
+.hpbar {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--px) * 2);
+  margin-top: calc(var(--px) * 2);
+}
+
+.hpbar-label {
+  font-size: calc(var(--px) * 6);
+  background: var(--navy);
+  color: var(--amber);
+  padding: 0 calc(var(--px) * 1.5);
+}
+
+.hpbar-track {
+  position: relative;
+  flex: 1;
+  height: calc(var(--px) * 4);
+  background: #3a3a3a;
+  border: calc(var(--px) * 0.75) solid var(--navy-d);
+}
+
+.hpbar-fill {
+  height: 100%;
+  background: #4fc24f;
+  transition: width 0.5s steps(12);
+}
+
+.hpbar-fill.mid {
+  background: #e8c13a;
+}
+
+.hpbar-fill.low {
+  background: #e0473a;
+}
+
+.hpbar-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--px) * 0.75);
+  background: var(--navy-d);
+}
+
+.battle-bubble {
+  position: absolute;
+  right: calc(var(--px) * 30);
+  top: calc(var(--px) * 30);
+  max-width: calc(var(--px) * 110);
+  padding: calc(var(--px) * 2) calc(var(--px) * 4);
+  background: var(--black2);
+  color: var(--lime-l);
+  border: calc(var(--px) * 0.75) solid var(--lime);
+  font-size: calc(var(--px) * 7.5);
+  line-height: 1.05;
+  pointer-events: none;
+}
+
+/* Tela de versus */
+.versus {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: rgba(10, 10, 15, 0.55);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.versus-band {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 34%;
+  height: 32%;
+  background: repeating-linear-gradient(90deg, var(--navy) 0 12px, var(--navy-d) 12px 24px);
+  border-top: calc(var(--px) * 2) solid var(--gold);
+  border-bottom: calc(var(--px) * 2) solid var(--lime);
+  transform: skewY(-8deg);
+  animation: vsband 0.5s steps(6) both;
+}
+
+.versus-hero,
+.versus-foe {
+  position: absolute;
+  width: calc(var(--px) * 72);
+  height: calc(var(--px) * 72);
+  top: calc(var(--px) * 54);
+  background: var(--cream-d);
+  border: calc(var(--px) * 1.5) solid var(--gold);
+}
+
+.versus-hero {
+  left: calc(var(--px) * 18);
+  animation: vsleft 0.6s steps(8) both 0.2s;
+}
+
+.versus-foe {
+  right: calc(var(--px) * 18);
+  background: #14161e;
+  border-color: var(--lime);
+  transform: scaleX(-1);
+  animation: vsright 0.6s steps(8) both 0.2s;
+}
+
+.versus-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 41%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: calc(var(--px) * 6);
+  font-family: var(--font-pixel);
+  font-size: calc(var(--px) * 9);
+  text-shadow: calc(var(--px) * 1) calc(var(--px) * 1) 0 var(--black);
+  animation: vspop 0.4s steps(4) both 0.7s;
+}
+
+.versus-name.hero {
+  color: var(--gold-l);
+}
+
+.versus-name.foe {
+  color: var(--lime);
+}
+
+.versus-vs {
+  color: #fff;
+  font-size: calc(var(--px) * 13);
+}
+
+.versus-epithet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--px) * 22);
+  text-align: center;
+  color: var(--lime-l);
+  font-size: calc(var(--px) * 9);
+  animation: vspop 0.4s steps(4) both 1s;
+}
+
+@keyframes vsband {
+  from {
+    transform: skewY(-8deg) scaleX(0);
+  }
+  to {
+    transform: skewY(-8deg) scaleX(1);
+  }
+}
+
+@keyframes vsleft {
+  from {
+    transform: translateX(-200%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes vsright {
+  from {
+    transform: scaleX(-1) translateX(-200%);
+  }
+  to {
+    transform: scaleX(-1) translateX(0);
+  }
+}
+
+@keyframes vspop {
+  from {
+    opacity: 0;
+    transform: scale(2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 1000px) {
+  .battle {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .battle-left {
+    overflow: visible;
+  }
+
+  .battle-right {
+    min-height: 560px;
+  }
+}
