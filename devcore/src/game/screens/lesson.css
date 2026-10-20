@@ -1,0 +1,82 @@
+.lesson {
+  display: flex;
+  flex-direction: column;
+  background: #121318;
+  overflow: hidden;
+}
+
+.lesson-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
+  background: var(--navy-d);
+  border-bottom: 4px solid var(--gold-d);
+}
+
+.lesson-title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--gold-l);
+}
+
+.lesson-coins {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 24px;
+}
+
+.lesson-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(300px, 0.85fr) minmax(0, 1.25fr);
+  gap: 14px;
+  padding: 14px;
+}
+
+.lesson-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+
+.lesson-brief {
+  flex: 1 1 auto;
+  min-height: 120px;
+}
+
+.lesson-left .dialog-panel {
+  font-size: 22px;
+}
+
+.lesson-right {
+  min-height: 0;
+  display: flex;
+}
+
+.lesson-right .ide {
+  flex: 1;
+}
+
+.lesson-next {
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .lesson {
+    overflow: auto;
+  }
+
+  .lesson-body {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-right {
+    min-height: 560px;
+  }
+}

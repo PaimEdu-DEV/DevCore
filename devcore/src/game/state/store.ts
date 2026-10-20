@@ -39,8 +39,20 @@ interface State {
 
 const mq = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
+/** Rota inicial. ?licao=<id>, ?batalha=<vilão> e ?rota=vila ajudam nos testes automáticos e na depuração. */
+function initialRoute(): Route {
+  if (typeof window === 'undefined') return { name: 'title' };
+  const p = new URLSearchParams(window.location.search);
+  const lesson = p.get('licao');
+  if (lesson) return { name: 'lesson', challengeId: lesson, back: { name: 'title' } };
+  const battle = p.get('batalha');
+  if (battle === 'aldric' || battle === 'veyr' || battle === 'seraphine' || battle === 'entity') return { name: 'battle', villain: battle };
+  if (p.get('rota') === 'vila') return { name: 'village' };
+  return { name: 'title' };
+}
+
 let state: State = {
-  route: { name: 'title' },
+  route: initialRoute(),
   save: typeof window !== 'undefined' ? loadSave() : null,
   options: typeof window !== 'undefined' ? loadOptions() : loadOptionsFallback(),
   toasts: [],

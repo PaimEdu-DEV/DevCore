@@ -5,6 +5,8 @@ import { CreationScreen } from './game/screens/CreationScreen';
 import { CutsceneScreen } from './game/screens/CutsceneScreen';
 import { OptionsScreen } from './game/screens/OptionsScreen';
 import { CreditsScreen } from './game/screens/CreditsScreen';
+import { LessonScreen } from './game/screens/LessonScreen';
+import { TrainingScreen } from './game/screens/TrainingScreen';
 import { assetUrl } from './game/assets/sprites';
 import { audio } from './game/audio/AudioManager';
 
@@ -68,6 +70,12 @@ export function App() {
       break;
     case 'credits':
       screen = <CreditsScreen />;
+      break;
+    case 'lesson':
+      screen = <LessonScreen key={route.challengeId} challengeId={route.challengeId} back={route.back} />;
+      break;
+    case 'training':
+      screen = <TrainingScreen back={route.back} />;
       break;
     default:
       screen = <Placeholder title={route.name} />;
