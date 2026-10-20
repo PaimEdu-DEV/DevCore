@@ -1,29 +1,28 @@
-import { StrictMode } from 'react';
+import { StrictMode, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
+import '@fontsource/press-start-2p';
+import '@fontsource/vt323';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/700.css';
+import './styles/global.css';
+import { App } from './App';
 
-function App() {
-  return (
-    <main
-      style={{
-        minHeight: '100vh',
-        display: 'grid',
-        placeItems: 'center',
-        background: '#0A0A0F',
-        color: '#E8C872',
-        fontFamily: 'monospace',
-        textAlign: 'center',
-      }}
-    >
-      <div>
-        <h1 style={{ fontSize: '3rem', margin: 0 }}>DevCore</h1>
-        <p style={{ color: '#F3E9D2' }}>O reino está sendo forjado. Volte em breve, herói.</p>
-      </div>
-    </main>
-  );
+const DebugSprites = lazy(() => import('./debug/DebugSprites').then((m) => ({ default: m.DebugSprites })));
+
+function Root() {
+  const path = window.location.pathname.replace(/\/+$/, '');
+  if (path === '/debug/sprites') {
+    return (
+      <Suspense fallback={null}>
+        <DebugSprites />
+      </Suspense>
+    );
+  }
+  return <App />;
 }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <Root />
   </StrictMode>,
 );

@@ -1,0 +1,348 @@
+:root {
+  --black: #0a0a0f;
+  --black2: #161a22;
+  --ink: #232838;
+  --lime: #9bff1a;
+  --lime-d: #2f6b00;
+  --lime-l: #e4ffb0;
+  --gold: #e8b84a;
+  --gold-d: #a87a1e;
+  --gold-l: #ffe08a;
+  --amber: #ffb000;
+  --brown: #6b4423;
+  --brown-d: #3d2614;
+  --cream: #f3e9d2;
+  --cream-d: #d9c7a0;
+  --navy: #1e2a4a;
+  --navy-l: #33456e;
+  --navy-d: #121a30;
+  --teal: #2ec4b6;
+  --red: #d8443a;
+  --green-ok: #6fcf6f;
+
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-ui: 'VT323', monospace;
+  --font-code: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --font-text: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --focus: 0 0 0 3px var(--gold-l), 0 0 0 5px var(--navy-d);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-ui);
+  font-size: 22px;
+  line-height: 1.15;
+  -webkit-font-smoothing: none;
+}
+
+body {
+  overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+img.px,
+.px {
+  image-rendering: pixelated;
+}
+
+/* ---------- palco de pixel ---------- */
+.pixel-stage-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.pixel-stage {
+  position: relative;
+  flex: none;
+}
+
+.pixel-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+.pixel-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pixel-overlay > * {
+  pointer-events: auto;
+}
+
+/* ---------- molduras pixel (9-slice) ---------- */
+.frame-dialog {
+  border: calc(var(--frame-px, 3px) * 8) solid transparent;
+  border-image: url('/assets/ui/frame_dialog.png') 8 fill / auto stretch;
+  image-rendering: pixelated;
+  color: var(--ink);
+}
+
+.frame-panel {
+  border: 24px solid transparent;
+  border-image: url('/assets/ui/frame_panel.png') 8 fill / 24px stretch;
+  image-rendering: pixelated;
+  color: var(--cream);
+}
+
+.frame-panel.thin {
+  border-width: 16px;
+  border-image-width: 16px;
+}
+
+.frame-parchment {
+  border-image: url('/assets/ui/frame_parchment.png') 8 fill / 16px repeat;
+  border: 16px solid transparent;
+  image-rendering: pixelated;
+  color: var(--ink);
+}
+
+/* ---------- botões e menus ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 14px;
+  min-height: 40px;
+  background: var(--navy);
+  color: var(--cream);
+  border: 3px solid var(--gold);
+  box-shadow: inset 0 -3px 0 var(--navy-d), 0 3px 0 var(--black);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 0 var(--black);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--navy-l);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: inset 0 -1px 0 var(--navy-d), 0 1px 0 var(--black);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  background: var(--gold-d);
+  border-color: var(--gold-l);
+  color: #fff8e6;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: #c2902a;
+}
+
+.btn.danger {
+  background: #6e1f1a;
+  border-color: #e0584a;
+}
+
+.btn.small {
+  min-height: 32px;
+  padding: 2px 10px;
+  font-size: 20px;
+}
+
+.menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 10px 6px 30px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 28px;
+  color: inherit;
+  position: relative;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  width: 12px;
+  height: 21px;
+  transform: translateY(-50%);
+  background: url('/assets/ui/cursor.png') center / contain no-repeat;
+  image-rendering: pixelated;
+  opacity: 0;
+}
+
+.menu-item[aria-current='true']::before,
+.menu-item:hover::before,
+.menu-item:focus-visible::before {
+  opacity: 1;
+}
+
+.menu-item[aria-current='true'] {
+  color: var(--gold-l);
+}
+
+.menu-item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.menu-item .hint {
+  margin-left: auto;
+  font-size: 20px;
+  opacity: 0.75;
+}
+
+/* ---------- utilitários ---------- */
+.screen {
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+}
+
+.center {
+  display: grid;
+  place-items: center;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.muted {
+  opacity: 0.7;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  vertical-align: middle;
+}
+
+.icon.sm {
+  width: 20px;
+  height: 20px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0 8px;
+  border: 2px solid currentColor;
+  font-size: 18px;
+}
+
+.rarity-common {
+  color: var(--cream-d);
+}
+.rarity-rare {
+  color: #7fb3ff;
+}
+.rarity-legendary {
+  color: var(--amber);
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}

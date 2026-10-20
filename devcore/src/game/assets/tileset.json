@@ -1,0 +1,31 @@
+{
+  "tileSize": 24,
+  "columns": 8,
+  "image": "assets/tiles/village.png",
+  "tiles": [
+    "grass",
+    "grass2",
+    "flowers",
+    "path",
+    "water",
+    "water2",
+    "tree",
+    "bush",
+    "fence",
+    "roof",
+    "eave",
+    "wall",
+    "window",
+    "door",
+    "stonewall",
+    "gate",
+    "bridge",
+    "sign",
+    "well",
+    "plaza",
+    "crate",
+    "lamp",
+    "gatetop",
+    "pathgrass"
+  ]
+}

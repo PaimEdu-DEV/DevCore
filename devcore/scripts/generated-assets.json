@@ -1,0 +1,218 @@
+[
+  {
+    "file": "assets/tiles/village.png",
+    "desc": "Tileset da vila 24x24 (grass, grass2, flowers, path, water, water2, tree, bush, fence, roof, eave, wall, window, door, stonewall, gate, bridge, sign, well, plaza, crate, lamp, gatetop, pathgrass)"
+  },
+  {
+    "file": "assets/backgrounds/battle_aldric.png",
+    "desc": "Fundo de batalha de Aldric (salão da guarda corrompido)"
+  },
+  {
+    "file": "assets/backgrounds/battle_veyr.png",
+    "desc": "Fundo de batalha de Veyr (telhados à noite)"
+  },
+  {
+    "file": "assets/backgrounds/battle_seraphine.png",
+    "desc": "Fundo de batalha de Seraphine (biblioteca proibida)"
+  },
+  {
+    "file": "assets/backgrounds/battle_entity.png",
+    "desc": "Fundo de batalha da Entidade (o vazio do Core)"
+  },
+  {
+    "file": "assets/backgrounds/scene_kingdom.png",
+    "desc": "Cena: o reino e o castelo corrompido"
+  },
+  {
+    "file": "assets/backgrounds/scene_core.png",
+    "desc": "Cena: o Core, coração do reino"
+  },
+  {
+    "file": "assets/backgrounds/scene_archive.png",
+    "desc": "Cena: o Arquivo de Orwin (interior aconchegante)"
+  },
+  {
+    "file": "assets/backgrounds/scene_village.png",
+    "desc": "Cena: a vila ao entardecer"
+  },
+  {
+    "file": "assets/backgrounds/title.png",
+    "desc": "Fundo da tela de título"
+  },
+  {
+    "file": "assets/ui/frame_dialog.png",
+    "desc": "Moldura 9-slice da caixa de diálogo (24x24, borda 8px)"
+  },
+  {
+    "file": "assets/ui/frame_panel.png",
+    "desc": "Moldura 9-slice de painel escuro (24x24, borda 8px)"
+  },
+  {
+    "file": "assets/ui/frame_parchment.png",
+    "desc": "Corpo 9-slice do pergaminho (ranking)"
+  },
+  {
+    "file": "assets/ui/scroll_roll.png",
+    "desc": "Rolo do pergaminho (topo/base)"
+  },
+  {
+    "file": "assets/ui/arrow_down.png",
+    "desc": "Seta ▼ da caixa de diálogo"
+  },
+  {
+    "file": "assets/ui/cursor.png",
+    "desc": "Cursor ► dos menus"
+  },
+  {
+    "file": "assets/ui/frame_wood.png",
+    "desc": "Moldura de nome (cosmético) frame_wood"
+  },
+  {
+    "file": "assets/ui/frame_silver.png",
+    "desc": "Moldura de nome (cosmético) frame_silver"
+  },
+  {
+    "file": "assets/ui/frame_gold.png",
+    "desc": "Moldura de nome (cosmético) frame_gold"
+  },
+  {
+    "file": "assets/ui/frame_ember.png",
+    "desc": "Moldura de nome (cosmético) frame_ember"
+  },
+  {
+    "file": "assets/ui/frame_star.png",
+    "desc": "Moldura de nome (cosmético) frame_star"
+  },
+  {
+    "file": "assets/ui/logo.png",
+    "desc": "Logo \"DevCore\" em pixel"
+  },
+  {
+    "file": "assets/icons/coin.png",
+    "desc": "Ícone coin (16x16)"
+  },
+  {
+    "file": "assets/icons/heart.png",
+    "desc": "Ícone heart (16x16)"
+  },
+  {
+    "file": "assets/icons/xp.png",
+    "desc": "Ícone xp (16x16)"
+  },
+  {
+    "file": "assets/icons/scroll.png",
+    "desc": "Ícone scroll (16x16)"
+  },
+  {
+    "file": "assets/icons/sword.png",
+    "desc": "Ícone sword (16x16)"
+  },
+  {
+    "file": "assets/icons/shield.png",
+    "desc": "Ícone shield (16x16)"
+  },
+  {
+    "file": "assets/icons/flask.png",
+    "desc": "Ícone flask (16x16)"
+  },
+  {
+    "file": "assets/icons/bolt.png",
+    "desc": "Ícone bolt (16x16)"
+  },
+  {
+    "file": "assets/icons/lock.png",
+    "desc": "Ícone lock (16x16)"
+  },
+  {
+    "file": "assets/icons/check.png",
+    "desc": "Ícone check (16x16)"
+  },
+  {
+    "file": "assets/icons/cross.png",
+    "desc": "Ícone cross (16x16)"
+  },
+  {
+    "file": "assets/icons/medal_gold.png",
+    "desc": "Ícone medal_gold (16x16)"
+  },
+  {
+    "file": "assets/icons/medal_silver.png",
+    "desc": "Ícone medal_silver (16x16)"
+  },
+  {
+    "file": "assets/icons/medal_bronze.png",
+    "desc": "Ícone medal_bronze (16x16)"
+  },
+  {
+    "file": "assets/icons/star.png",
+    "desc": "Ícone star (16x16)"
+  },
+  {
+    "file": "assets/icons/chest.png",
+    "desc": "Ícone chest (16x16)"
+  },
+  {
+    "file": "assets/icons/daily.png",
+    "desc": "Ícone daily (16x16)"
+  },
+  {
+    "file": "assets/fx/impact.png",
+    "desc": "Efeito de impacto (4 quadros 32x32)"
+  },
+  {
+    "file": "assets/fx/magic_python.png",
+    "desc": "Magia do Alquimista (Python): orbes teal e dourado (4 quadros)"
+  },
+  {
+    "file": "assets/fx/magic_js.png",
+    "desc": "Magia do Mago (JavaScript): raios âmbar (4 quadros)"
+  },
+  {
+    "file": "assets/fx/corruption.png",
+    "desc": "Partículas de corrupção verde-limão dos vilões (4 quadros)"
+  },
+  {
+    "file": "assets/fx/heal.png",
+    "desc": "Brilho de cura/vitória dourado (4 quadros)"
+  },
+  {
+    "file": "assets/cosmetics/hat_mage.png",
+    "desc": "Cosmético de cabeça hat_mage (âncora: centro-inferior na cabeça)"
+  },
+  {
+    "file": "assets/cosmetics/hat_feather.png",
+    "desc": "Cosmético de cabeça hat_feather (âncora: centro-inferior na cabeça)"
+  },
+  {
+    "file": "assets/cosmetics/hat_hood.png",
+    "desc": "Cosmético de cabeça hat_hood (âncora: centro-inferior na cabeça)"
+  },
+  {
+    "file": "assets/cosmetics/hat_crown.png",
+    "desc": "Cosmético de cabeça hat_crown (âncora: centro-inferior na cabeça)"
+  },
+  {
+    "file": "assets/cosmetics/hat_glasses.png",
+    "desc": "Cosmético de cabeça hat_glasses (âncora: centro-inferior na cabeça)"
+  },
+  {
+    "file": "assets/cosmetics/hat_laurel.png",
+    "desc": "Cosmético de cabeça hat_laurel (âncora: centro-inferior na cabeça)"
+  },
+  {
+    "file": "assets/cosmetics/aura_ember.png",
+    "desc": "Aura aura_ember (64x64, desenhada atrás do herói)"
+  },
+  {
+    "file": "assets/cosmetics/aura_starlight.png",
+    "desc": "Aura aura_starlight (64x64, desenhada atrás do herói)"
+  },
+  {
+    "file": "assets/cosmetics/aura_golden.png",
+    "desc": "Aura aura_golden (64x64, desenhada atrás do herói)"
+  },
+  {
+    "file": "assets/cosmetics/aura_tide.png",
+    "desc": "Aura aura_tide (64x64, desenhada atrás do herói)"
+  }
+]
