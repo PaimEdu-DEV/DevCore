@@ -275,12 +275,16 @@
 
 @media (max-width: 1000px) {
   .battle {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: max-content max-content;
+    align-content: start;
     overflow: auto;
+    padding: 6px;
   }
 
   .battle-left {
     overflow: visible;
+    min-height: auto;
   }
 
   .battle-right {

@@ -25,7 +25,8 @@ export function PixelStage({ render, children, className, maxScale, onPointerDow
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderRef = useRef(render);
   renderRef.current = render;
-  const [scale, setScale] = useState(2);
+  // Começa pequeno: um palco grande demais pode alargar o contêiner antes da primeira medição.
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     const wrap = wrapRef.current;

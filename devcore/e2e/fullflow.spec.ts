@@ -56,8 +56,12 @@ test('fluxo completo: novo jogo → herói → lição → portão → Aldric', 
   await expect(page.locator('.village-hud')).toBeVisible();
   await page.waitForTimeout(300);
   await step(page, 'ArrowRight');
-  await step(page, 'ArrowUp', 10);
-  await page.waitForTimeout(300);
+  // sobe até o portão aparecer na dica (robusto a variações de tempo)
+  for (let i = 0; i < 16; i++) {
+    if ((await page.locator('.village-hint').allTextContents()).join('').includes('Portão')) break;
+    await step(page, 'ArrowUp');
+    await page.waitForTimeout(120);
+  }
   await expect(page.locator('.village-hint')).toContainText('Portão');
   await page.screenshot({ path: `${SHOTS}/41-gate.png` });
   await page.keyboard.press('Enter');

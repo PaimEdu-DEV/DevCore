@@ -9,7 +9,7 @@ const tiles = [];
 let x = 8, y = 8, rowH = 0;
 for (const f of files) {
   const meta = await sharp(f).metadata();
-  const w = meta.width * scale, h = meta.height * scale;
+  const w = Math.round(meta.width * scale), h = Math.round(meta.height * scale);
   if (x + w > maxW) { x = 8; y += rowH + 8; rowH = 0; }
   tiles.push({ input: await sharp(f).resize(w, h, { kernel: 'nearest' }).png().toBuffer(), left: x, top: y });
   x += w + 8; rowH = Math.max(rowH, h);

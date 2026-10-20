@@ -39,7 +39,7 @@ interface State {
 
 const mq = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
-/** Rota inicial. ?licao=<id>, ?batalha=<vilão> e ?rota=vila ajudam nos testes automáticos e na depuração. */
+/** Rota inicial. ?licao=<id>, ?batalha=<vilão> e ?rota=vila|relampago|diario ajudam nos testes automáticos e na depuração. */
 function initialRoute(): Route {
   if (typeof window === 'undefined') return { name: 'title' };
   const p = new URLSearchParams(window.location.search);
@@ -47,7 +47,10 @@ function initialRoute(): Route {
   if (lesson) return { name: 'lesson', challengeId: lesson, back: { name: 'title' } };
   const battle = p.get('batalha');
   if (battle === 'aldric' || battle === 'veyr' || battle === 'seraphine' || battle === 'entity') return { name: 'battle', villain: battle };
-  if (p.get('rota') === 'vila') return { name: 'village' };
+  const r = p.get('rota');
+  if (r === 'vila') return { name: 'village' };
+  if (r === 'relampago') return { name: 'lightning' };
+  if (r === 'diario') return { name: 'daily' };
   return { name: 'title' };
 }
 

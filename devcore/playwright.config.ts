@@ -8,6 +8,8 @@ export default defineConfig({
   testDir: './e2e',
   timeout: 120_000,
   fullyParallel: false,
+  // Um worker: os testes andam pela vila com o teclado e carregam o Pyodide, e ficam instáveis em paralelo.
+  workers: 1,
   reporter: [['list']],
   use: {
     baseURL: 'http://localhost:5199',
