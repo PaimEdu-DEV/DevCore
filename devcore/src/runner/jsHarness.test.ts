@@ -86,6 +86,6 @@ describe('conteúdo pedagógico (JavaScript)', () => {
     expect([count('veyr', 'lesson'), count('veyr', 'boss')]).toEqual([3, 2]);
     expect([count('seraphine', 'lesson'), count('seraphine', 'boss')]).toEqual([3, 2]);
     expect([count('entity', 'lesson'), count('entity', 'boss')]).toEqual([2, 3]);
-    expect(ALL_CHALLENGES.filter((c) => c.kind === 'extra')).toHaveLength(10);
+    expect(ALL_CHALLENGES.filter((c) => c.kind === 'extra')).toHaveLength(18);
   });
 });

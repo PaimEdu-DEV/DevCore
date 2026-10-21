@@ -105,4 +105,36 @@ export const SOLUTIONS: Record<string, Record<Language, string>> = {
     python: 'def contar_palavras(frase):\n    return len(frase.split())\n',
     javascript: 'function contarPalavras(frase) {\n  const t = frase.trim();\n  return t === "" ? 0 : t.split(/\\s+/).length;\n}\n',
   },
+  'extra-filtrar-pares': {
+    python: 'def filtrar_pares(numeros):\n    return [n for n in numeros if n % 2 == 0]\n',
+    javascript: 'function filtrarPares(numeros) {\n  return numeros.filter((n) => n % 2 === 0);\n}\n',
+  },
+  'extra-sem-repetidos': {
+    python: 'def sem_repetidos(itens):\n    r = []\n    for x in itens:\n        if x not in r:\n            r.append(x)\n    return r\n',
+    javascript: 'function semRepetidos(itens) {\n  return [...new Set(itens)];\n}\n',
+  },
+  'extra-acima-media': {
+    python: 'def acima_da_media(numeros):\n    if not numeros:\n        return 0\n    m = sum(numeros) / len(numeros)\n    return len([n for n in numeros if n > m])\n',
+    javascript: 'function acimaDaMedia(numeros) {\n  if (numeros.length === 0) return 0;\n  const m = numeros.reduce((a, b) => a + b, 0) / numeros.length;\n  return numeros.filter((n) => n > m).length;\n}\n',
+  },
+  'extra-inventario': {
+    python: 'def inventario(itens):\n    c = {}\n    for i in itens:\n        c[i] = c.get(i, 0) + 1\n    return c\n',
+    javascript: 'function inventario(itens) {\n  const c = {};\n  for (const i of itens) c[i] = (c[i] ?? 0) + 1;\n  return c;\n}\n',
+  },
+  'extra-conta-loja': {
+    python: 'def conta_da_loja(precos, compras):\n    return sum(precos.get(i, 0) for i in compras)\n',
+    javascript: 'function contaDaLoja(precos, compras) {\n  return compras.reduce((t, i) => t + (precos[i] ?? 0), 0);\n}\n',
+  },
+  'extra-titulo': {
+    python: 'def titulo(frase):\n    return " ".join(p[:1].upper() + p[1:].lower() for p in frase.split(" "))\n',
+    javascript: 'function titulo(frase) {\n  return frase.split(" ").map((p) => p.slice(0, 1).toUpperCase() + p.slice(1).toLowerCase()).join(" ");\n}\n',
+  },
+  'extra-iniciais': {
+    python: 'def iniciais(nome):\n    return "".join(p[0] for p in nome.split()).upper()\n',
+    javascript: 'function iniciais(nome) {\n  return nome.split(" ").filter(Boolean).map((p) => p[0]).join("").toUpperCase();\n}\n',
+  },
+  'extra-cifra': {
+    python: 'def cifrar(texto, k):\n    r = ""\n    for c in texto:\n        if "a" <= c <= "z":\n            r += chr((ord(c) - 97 + k) % 26 + 97)\n        else:\n            r += c\n    return r\n',
+    javascript: 'function cifrar(texto, k) {\n  let r = "";\n  for (const c of texto) {\n    r += c >= "a" && c <= "z" ? String.fromCharCode((c.charCodeAt(0) - 97 + k) % 26 + 97) : c;\n  }\n  return r;\n}\n',
+  },
 };
