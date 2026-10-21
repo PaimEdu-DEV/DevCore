@@ -1,11 +1,11 @@
 import { test, expect, type Page } from '@playwright/test';
 import { SHOTS, seedSave } from './helpers';
 
-/** Clica numa coordenada virtual (320x180) do palco. */
+/** Clica numa coordenada virtual (448x252) do palco da vila. */
 async function clickVirtual(page: Page, vx: number, vy: number) {
   const box = await page.locator('.pixel-stage').boundingBox();
   if (!box) throw new Error('sem palco');
-  await page.mouse.click(box.x + (vx / 320) * box.width, box.y + (vy / 180) * box.height);
+  await page.mouse.click(box.x + (vx / 448) * box.width, box.y + (vy / 252) * box.height);
 }
 
 test('vila: andar, conversar, loja, menu e portão', async ({ page }) => {
@@ -15,23 +15,8 @@ test('vila: andar, conversar, loja, menu e portão', async ({ page }) => {
   await page.waitForTimeout(600);
   await page.screenshot({ path: `${SHOTS}/30-village.png` });
 
-  // andar com o teclado: sobe pelo caminho até a praça
-  for (let i = 0; i < 4; i++) {
-    await page.keyboard.down('ArrowUp');
-    await page.waitForTimeout(170);
-    await page.keyboard.up('ArrowUp');
-  }
-  await page.waitForTimeout(300);
-  await page.screenshot({ path: `${SHOTS}/31-village-walk.png` });
-
-  // menu em jogo
-  await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog', { name: 'Menu' })).toBeVisible();
-  await page.screenshot({ path: `${SHOTS}/32-village-menu.png` });
-  await page.keyboard.press('Escape');
-
-  // clicar no Garrick: anda até ele e abre a conversa
-  await clickVirtual(page, 160 - (10 - 6) * 24, 90);
+  // clicar no Garrick (tile 6,9) a partir do ponto inicial (10,12): câmera em x=28, y=108.
+  await clickVirtual(page, 6 * 24 + 12 - 28, 9 * 24 + 6 - 108);
   await expect(page.locator('.dialog-name')).toHaveText('Garrick', { timeout: 15_000 });
   await page.screenshot({ path: `${SHOTS}/33-village-garrick.png` });
   await page.getByRole('option', { name: 'Ver a loja' }).click();
@@ -48,4 +33,19 @@ test('vila: andar, conversar, loja, menu e portão', async ({ page }) => {
   expect(save.cosmetics.equipped.aura).toBe('aura_ember');
   await page.waitForTimeout(500);
   await page.screenshot({ path: `${SHOTS}/35-village-cosmetics.png` });
+
+  // andar com o teclado
+  for (let i = 0; i < 3; i++) {
+    await page.keyboard.down('ArrowRight');
+    await page.waitForTimeout(170);
+    await page.keyboard.up('ArrowRight');
+  }
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: `${SHOTS}/31-village-walk.png` });
+
+  // menu em jogo
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog', { name: 'Menu' })).toBeVisible();
+  await page.screenshot({ path: `${SHOTS}/32-village-menu.png` });
+  await page.keyboard.press('Escape');
 });

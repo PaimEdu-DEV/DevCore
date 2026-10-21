@@ -424,3 +424,130 @@
 .rich-text strong {
   color: #ffffff;
 }
+
+/* ---------- teclas de código (celular / estande) ---------- */
+.code-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 8px;
+  background: #252526;
+  border-bottom: 1px solid #333;
+}
+
+.code-token {
+  min-width: 34px;
+  height: 32px;
+  padding: 0 8px;
+  background: #3a3d41;
+  color: #ffffff;
+  border: 1px solid #4a4d52;
+  border-radius: 4px;
+  font-family: var(--font-code);
+  font-size: 15px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.code-token:hover {
+  background: #45494e;
+}
+
+.code-token:active {
+  background: #0e639c;
+}
+
+.code-token.del {
+  margin-left: auto;
+  background: #5a2d2d;
+  border-color: #7a3d3d;
+}
+
+/* ---------- luta rápida contra capangas ---------- */
+.qf {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  color: #e6e6e6;
+  font-family: var(--font-text);
+  font-size: 15px;
+}
+
+.qf-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qf-badge {
+  padding: 2px 8px;
+  background: var(--red);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+}
+
+.qf-title {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--gold-l);
+}
+
+.qf-statement {
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+.qf .code-tokens {
+  border: 1px solid #333;
+}
+
+.qf-editor {
+  position: relative;
+  min-height: 150px;
+  border: 2px solid var(--gold-d);
+  background: #1e1e1e;
+}
+
+.qf-editor .code-editor,
+.qf-editor .cm-editor {
+  height: 100%;
+  min-height: 150px;
+}
+
+.qf-feedback {
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 4px solid;
+  background: #252526;
+}
+
+.qf-feedback.ok {
+  border-color: var(--green-ok);
+  color: #b8f0b8;
+}
+
+.qf-feedback.fail {
+  border-color: var(--red);
+  color: #ffd0c8;
+}
+
+.qf-hint {
+  margin: 0;
+  padding: 8px 10px;
+  background: #2d2a1e;
+  border-left: 4px solid var(--gold);
+}
+
+.qf-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.qf-run {
+  font-size: 18px;
+  padding: 10px 22px;
+}

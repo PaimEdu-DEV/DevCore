@@ -14,13 +14,18 @@ interface Props {
   /** Escala mínima permitida (fracionária só quando não cabe nem 1x). */
   maxScale?: number;
   onPointerDown?: (vx: number, vy: number) => void;
+  /** Resolução virtual (padrão 320x180). Telas de exploração usam uma câmera mais aberta. */
+  width?: number;
+  height?: number;
+  /** Permite escala fracionária para ocupar a tela inteira (câmeras mais abertas). */
+  fractional?: boolean;
 }
 
 /**
  * Palco de pixel art: canvas 320x180 escalado em múltiplos inteiros, com
  * image-rendering: pixelated, e uma camada DOM do mesmo tamanho por cima.
  */
-export function PixelStage({ render, children, className, maxScale, onPointerDown }: Props) {
+export function PixelStage({ render, children, className, maxScale, onPointerDown, width = VW, height = VH, fractional }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderRef = useRef(render);
@@ -34,14 +39,15 @@ export function PixelStage({ render, children, className, maxScale, onPointerDow
     const ro = new ResizeObserver(() => {
       const w = wrap.clientWidth;
       const h = wrap.clientHeight;
-      let s = Math.floor(Math.min(w / VW, h / VH));
-      if (s < 1) s = Math.min(w / VW, h / VH);
+      const fit = Math.min(w / width, h / height);
+      let s = fractional ? fit : Math.floor(fit);
+      if (s < 1) s = fit;
       if (maxScale) s = Math.min(s, maxScale);
       setScale(Math.max(0.5, s));
     });
     ro.observe(wrap);
     return () => ro.disconnect();
-  }, [maxScale]);
+  }, [maxScale, width, height, fractional]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -68,14 +74,14 @@ export function PixelStage({ render, children, className, maxScale, onPointerDow
     <div ref={wrapRef} className={`pixel-stage-wrap ${className ?? ''}`}>
       <div
         className="pixel-stage"
-        style={{ width: VW * scale, height: VH * scale, ['--px' as string]: `${scale}px` }}
+        style={{ width: Math.floor(width * scale), height: Math.floor(height * scale), ['--px' as string]: `${scale}px` }}
         onPointerDown={(e) => {
           if (!onPointerDown) return;
           const rect = e.currentTarget.getBoundingClientRect();
-          onPointerDown(((e.clientX - rect.left) / rect.width) * VW, ((e.clientY - rect.top) / rect.height) * VH);
+          onPointerDown(((e.clientX - rect.left) / rect.width) * width, ((e.clientY - rect.top) / rect.height) * height);
         }}
       >
-        <canvas ref={canvasRef} width={VW} height={VH} className="pixel-canvas" />
+        <canvas ref={canvasRef} width={width} height={height} className="pixel-canvas" />
         <div className="pixel-overlay">{children}</div>
       </div>
     </div>

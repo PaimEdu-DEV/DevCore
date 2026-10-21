@@ -2,7 +2,7 @@ import type { Language, RunnableChallenge, TestCase } from '../../../runner/type
 import type { VillainId } from '../../state/save';
 
 export type Concept = 'basics' | 'loops' | 'functions' | 'errors' | 'mixed';
-export type ChallengeKind = 'lesson' | 'boss' | 'extra';
+export type ChallengeKind = 'lesson' | 'boss' | 'extra' | 'minion';
 
 export const CONCEPT_LABEL: Record<Concept, string> = {
   basics: 'Variáveis, tipos e decisões',
@@ -24,7 +24,7 @@ export interface Challenge extends RunnableChallenge {
   concept: Concept;
   villain: VillainId | null;
   kind: ChallengeKind;
-  /** Fase da luta (1, 2, 3) para kind === 'boss'. */
+  /** Fase da luta (1, 2, 3) para kind === 'boss'. Capangas ('minion') guardam o caminho da Jornada. */
   phase?: number;
   title: string;
   statement: LText;

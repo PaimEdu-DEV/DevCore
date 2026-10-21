@@ -1,6 +1,6 @@
-import { same, type Challenge } from './types';
+import type { Challenge } from './types';
 
-// Veyr: for/while, acumuladores, break e condição de parada. 3 lições + 2 fases.
+// Veyr: for/while, acumuladores, break e condição de parada. 3 lições (as fases do chefe ficam em journey.ts).
 export const VEYR_CHALLENGES: Challenge[] = [
   {
     id: 'veyr-l1',
@@ -170,108 +170,6 @@ Use um \`while\` com índice, ou um \`for\` que pare cedo.`,
     },
     xp: 60,
     coins: 25,
-  },
-  {
-    id: 'veyr-b1',
-    concept: 'loops',
-    villain: 'veyr',
-    kind: 'boss',
-    phase: 1,
-    title: 'Esquiva em sequência',
-    statement: `Veyr ataca em sequência! Cada golpe vem \`"alto"\` ou \`"baixo"\`.
-
-Escreva \`{fn}(golpes)\` que devolve uma **lista** com a esquiva para cada golpe, na mesma ordem:
-
-- \`"alto"\` → \`"abaixar"\`
-- \`"baixo"\` → \`"pular"\`
-
-Exemplo: \`{fn}(["alto", "baixo", "alto"])\` → \`["abaixar", "pular", "abaixar"]\``,
-    functionName: same('esquivar'),
-    starter: {
-      python: `def esquivar(golpes):
-    esquivas = []
-    # para cada golpe, adicione a esquiva certa com esquivas.append(...)
-    return esquivas
-`,
-      javascript: `function esquivar(golpes) {
-  const esquivas = [];
-  // para cada golpe, adicione a esquiva certa com esquivas.push(...)
-  return esquivas;
-}
-`,
-    },
-    tests: [
-      { args: [['alto', 'baixo', 'alto']], expected: ['abaixar', 'pular', 'abaixar'] },
-      { args: [['baixo', 'baixo', 'baixo', 'alto', 'baixo']], expected: ['pular', 'pular', 'pular', 'abaixar', 'pular'] },
-      { args: [[]], expected: [], hidden: true },
-      { args: [['alto', 'alto', 'alto', 'alto', 'alto', 'baixo', 'alto', 'baixo']], expected: ['abaixar', 'abaixar', 'abaixar', 'abaixar', 'abaixar', 'pular', 'abaixar', 'pular'], hidden: true },
-    ],
-    hints: [
-      'Um laço sobre os golpes e um if dentro dele.',
-      { python: 'for g in golpes: e, dentro, if g == "alto": esquivas.append("abaixar")', javascript: 'for (const g of golpes) { ... } e, dentro, if (g === "alto") esquivas.push("abaixar")' },
-      'Não esqueça do else para o golpe baixo.',
-    ],
-    mentor: {
-      success: 'Três, cinco, oito... não importa quantos. Seu laço esquiva todos.',
-      failure: 'Confira a ordem das esquivas e se a lista tem o mesmo tamanho da lista de golpes.',
-    },
-    xp: 90,
-    coins: 35,
-  },
-  {
-    id: 'veyr-b2',
-    concept: 'loops',
-    villain: 'veyr',
-    kind: 'boss',
-    phase: 2,
-    title: 'A conta de Veyr',
-    statement: `Veyr ataca em sequências cada vez maiores: **3, 5, 8, 13, 21...** Cada número é a soma dos dois anteriores.
-
-Escreva \`{fn}(n)\` que devolve a lista com os **n primeiros** tamanhos de sequência.
-
-- \`{fn}(1)\` → \`[3]\`
-- \`{fn}(4)\` → \`[3, 5, 8, 13]\`
-- \`{fn}(0)\` → \`[]\`
-
-Descubra o padrão e preveja o próximo ataque!`,
-    functionName: { python: 'sequencia_de_veyr', javascript: 'sequenciaDeVeyr' },
-    starter: {
-      python: `def sequencia_de_veyr(n):
-    resultado = []
-    a, b = 3, 5
-    # repita n vezes: guarde a, depois avance (a, b) para os próximos valores
-    return resultado
-`,
-      javascript: `function sequenciaDeVeyr(n) {
-  const resultado = [];
-  let a = 3;
-  let b = 5;
-  // repita n vezes: guarde a, depois avance a e b para os próximos valores
-  return resultado;
-}
-`,
-    },
-    tests: [
-      { args: [1], expected: [3] },
-      { args: [4], expected: [3, 5, 8, 13] },
-      { args: [0], expected: [] },
-      { args: [2], expected: [3, 5], hidden: true },
-      { args: [7], expected: [3, 5, 8, 13, 21, 34, 55], hidden: true },
-    ],
-    hints: [
-      'Use um laço que rode exatamente n vezes.',
-      'A cada volta: adicione a na lista. Depois o novo a vira o antigo b, e o novo b vira a soma dos dois.',
-      {
-        python: 'Em Python dá para trocar os dois de uma vez: a, b = b, a + b',
-        javascript: 'Em JavaScript, guarde a soma antes: const proximo = a + b; a = b; b = proximo;',
-      },
-    ],
-    mentor: {
-      success: 'Você previu a próxima sequência antes dele. Batedor nenhum resiste a isso.',
-      failure: 'Escreva a sequência no papel: 3, 5, 8... Como cada número nasce dos dois anteriores?',
-    },
-    xp: 140,
-    coins: 55,
   },
 ];
 

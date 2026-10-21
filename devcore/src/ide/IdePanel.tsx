@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { CodeEditor, type CodeEditorHandle } from './CodeEditor';
+import { CodeTokens } from './CodeTokens';
 import { run, pythonRuntime, warmupPython, type RunResult } from '../runner';
 import { formatValue } from '../runner/compare';
 import type { Language } from '../runner/types';
@@ -33,7 +34,7 @@ function readDraft(id: string, lang: Language): string | null {
   }
 }
 
-function PythonLoading() {
+export function PythonLoading() {
   const status = useSyncExternalStore(pythonRuntime.subscribe, pythonRuntime.status);
   const stage = useSyncExternalStore(pythonRuntime.subscribe, pythonRuntime.stage);
   const error = useSyncExternalStore(pythonRuntime.subscribe, pythonRuntime.error);
@@ -133,6 +134,8 @@ export function IdePanel({ challenge, language, onResult, onHint, hintLabel, hin
           </button>
         </div>
       </div>
+
+      <CodeTokens editor={editor} challenge={challenge} language={language} />
 
       <div className="ide-editor-wrap">
         <CodeEditor

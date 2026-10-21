@@ -18,6 +18,7 @@ import { audio } from './game/audio/AudioManager';
 // Telas com editor de código (CodeMirror) são carregadas sob demanda.
 const LessonScreen = lazy(() => import('./game/screens/LessonScreen').then((m) => ({ default: m.LessonScreen })));
 const LightningScreen = lazy(() => import('./game/screens/LightningScreen').then((m) => ({ default: m.LightningScreen })));
+const JourneyScreen = lazy(() => import('./game/screens/JourneyScreen').then((m) => ({ default: m.JourneyScreen })));
 const BattleScreen = lazy(() => import('./game/screens/BattleScreen').then((m) => ({ default: m.BattleScreen })));
 
 function Toasts() {
@@ -110,6 +111,9 @@ export function App() {
       break;
     case 'lightning':
       screen = <LightningScreen />;
+      break;
+    case 'journey':
+      screen = <JourneyScreen />;
       break;
     case 'battle':
       screen = <BattleScreen key={route.villain} villain={route.villain} />;

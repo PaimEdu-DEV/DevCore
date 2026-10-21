@@ -19,6 +19,7 @@ import { grant, recordRun, spendCoins, awardTitle, HINT_COSTS } from '../state/r
 import { EARNED_TITLES, levelFromXp } from '../state/progression';
 import { syncProfile } from '../../services/backend';
 import { audio } from '../audio/AudioManager';
+import { AREAS } from '../journey/areas';
 import type { RunResult } from '../../runner';
 import './battle.css';
 
@@ -212,7 +213,11 @@ export function BattleScreen({ villain }: { villain: VillainId }) {
     void syncProfile(game.get().save, equippedTitle(game.get().save));
     await sleep(2600);
     if (!mounted.current) return;
-    const next = villain === 'entity' ? ({ name: 'cutscene', id: 'epilogue', next: { name: 'village' } } as const) : ({ name: 'village' } as const);
+    // Na Jornada, vencer o chefe da área atual libera a próxima.
+    game.update((d) => {
+      if (AREAS[d.journey.area]?.villain === villain) d.journey = { area: d.journey.area + 1, beaten: [] };
+    });
+    const next = villain === 'entity' ? ({ name: 'cutscene', id: 'epilogue', next: { name: 'journey' } } as const) : ({ name: 'journey' } as const);
     game.navigate({ name: 'cutscene', id: `${villain}_defeat`, next });
   };
 
@@ -223,7 +228,7 @@ export function BattleScreen({ villain }: { villain: VillainId }) {
     audio.play('cancel');
     await sleep(2000);
     if (!mounted.current) return;
-    game.navigate({ name: 'cutscene', id: 'defeat_consolation', next: { name: 'village' } });
+    game.navigate({ name: 'cutscene', id: 'defeat_consolation', next: { name: 'journey' } });
   };
 
   const onResult = async (r: RunResult) => {
@@ -452,7 +457,7 @@ export function BattleScreen({ villain }: { villain: VillainId }) {
             confirmFlee ? (
               <span className="row" style={{ gap: 4 }}>
                 <span>Fugir?</span>
-                <button className="ide-btn" onClick={() => game.navigate({ name: 'village' })}>Sim</button>
+                <button className="ide-btn" onClick={() => game.navigate({ name: 'journey' })}>Sim</button>
                 <button className="ide-btn" onClick={() => setConfirmFlee(false)}>Não</button>
               </span>
             ) : (

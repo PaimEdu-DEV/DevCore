@@ -26,6 +26,10 @@ export interface CodeEditorHandle {
   setDoc(text: string): void;
   getDoc(): string;
   focus(): void;
+  /** Insere texto no cursor sem focar o editor (não abre o teclado do celular). */
+  insert(text: string): void;
+  /** Apaga o caractere antes do cursor (ou a seleção). */
+  deleteBack(): void;
 }
 
 interface Props {
@@ -38,6 +42,8 @@ interface Props {
   onRun?: () => void;
   onCursor?: (line: number, col: number) => void;
   ariaLabel?: string;
+  /** Quebra linhas longas (telas estreitas). */
+  wrap?: boolean;
   ref?: Ref<CodeEditorHandle>;
 }
 
@@ -79,7 +85,7 @@ function languageExt(lang: Language): Extension[] {
 const fontTheme = (size: number) => EditorView.theme({ '&': { fontSize: `${size}px` }, '.cm-gutters': { fontSize: `${size}px` } });
 
 /** Editor de código de verdade (CodeMirror 6): numeração, realce, autocompletar, busca e erros. */
-export function CodeEditor({ language, initialDoc, fontSize, error, onChange, onRun, onCursor, ariaLabel, ref }: Props) {
+export function CodeEditor({ language, initialDoc, fontSize, error, onChange, onRun, onCursor, ariaLabel, wrap, ref }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const view = useRef<EditorView | null>(null);
   const fontComp = useRef(new Compartment());
@@ -95,6 +101,20 @@ export function CodeEditor({ language, initialDoc, fontSize, error, onChange, on
     },
     getDoc: () => view.current?.state.doc.toString() ?? '',
     focus: () => view.current?.focus(),
+    insert(text: string) {
+      const v = view.current;
+      if (!v) return;
+      const { from, to } = v.state.selection.main;
+      v.dispatch({ changes: { from, to, insert: text }, selection: { anchor: from + text.length }, scrollIntoView: true });
+    },
+    deleteBack() {
+      const v = view.current;
+      if (!v) return;
+      const { from, to } = v.state.selection.main;
+      const start = from === to ? Math.max(0, from - 1) : from;
+      if (start === to) return;
+      v.dispatch({ changes: { from: start, to }, selection: { anchor: start }, scrollIntoView: true });
+    },
   }));
 
   useEffect(() => {
@@ -120,6 +140,7 @@ export function CodeEditor({ language, initialDoc, fontSize, error, onChange, on
         errorLineField,
         keymap.of([runKey, ...closeBracketsKeymap, ...defaultKeymap, ...searchKeymap, ...historyKeymap, ...completionKeymap, indentWithTab]),
         ...languageExt(language),
+        ...(wrap ? [EditorView.lineWrapping] : []),
         darkPlusTheme,
         darkPlusHighlight,
         fontComp.current.of(fontTheme(fontSize)),

@@ -65,18 +65,26 @@ test('fluxo completo: novo jogo → herói → lição → portão → Aldric', 
   await expect(page.locator('.village-hint')).toContainText('Portão');
   await page.screenshot({ path: `${SHOTS}/41-gate.png` });
   await page.keyboard.press('Enter');
-  await page.getByRole('option', { name: 'Atravessar o portão' }).click();
-  await expect(page.getByRole('heading', { name: 'O Portão do Reino' })).toBeVisible();
-  await page.screenshot({ path: `${SHOTS}/42-boss-select.png` });
-  await page.getByRole('button', { name: /Aldric: disponível/ }).click();
-  await page.getByRole('option', { name: 'Lutar mesmo assim' }).click();
+  await page.getByRole('option', { name: 'Abrir o portão' }).click();
 
-  // apresentação do Aldric
-  await expect(page.getByRole('button', { name: /Pular cena/ })).toBeVisible();
-  await page.waitForTimeout(1800);
-  await page.screenshot({ path: `${SHOTS}/43-aldric-intro.png` });
-  await page.getByRole('button', { name: /Pular cena/ }).click();
+  // Jornada: dois bugs no caminho e depois o Aldric
+  await expect(page.locator('.journey-hud')).toBeVisible();
+  await page.keyboard.press('Enter');
+  for (const id of ['bug-soma', 'bug-cura']) {
+    await page.keyboard.down('ArrowRight');
+    await expect(page.locator('.qf')).toBeVisible({ timeout: 15_000 });
+    await page.keyboard.up('ArrowRight');
+    await setCode(page, SOLUTIONS[id].javascript);
+    await page.getByRole('button', { name: /Atacar/ }).click();
+    await expect(page.locator('.qf')).toBeHidden({ timeout: 10_000 });
+  }
+  await page.keyboard.down('ArrowRight');
+  await expect(page.getByRole('button', { name: /Lutar/ })).toBeVisible({ timeout: 15_000 });
+  await page.keyboard.up('ArrowRight');
+  await page.screenshot({ path: `${SHOTS}/42-journey-boss.png` });
+  await page.getByRole('button', { name: /Lutar/ }).click();
 
+  // a Jornada vai direto para a luta (sem cutscene, para ser rápida no estande)
   await page.waitForTimeout(1800);
   await page.screenshot({ path: `${SHOTS}/44-versus.png` });
   await page.keyboard.press('Enter');
@@ -89,7 +97,7 @@ test('fluxo completo: novo jogo → herói → lição → portão → Aldric', 
   await page.keyboard.press('Control+Enter');
   await expect(page.getByRole('button', { name: /Pular cena/ })).toBeVisible({ timeout: 20_000 });
   await page.getByRole('button', { name: /Pular cena/ }).click();
-  await expect(page.locator('.village-hud')).toBeVisible();
+  await expect(page.locator('.journey-hud')).toBeVisible();
   const save = await page.evaluate(() => JSON.parse(localStorage.getItem('devcore.save')!));
   expect(save.player.heroClass).toBe('mage');
   expect(save.lessons['aldric-l1'].done).toBe(true);

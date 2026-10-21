@@ -73,6 +73,8 @@ export interface SaveData {
   daily: { lastWelcomeBonus: string | null; completed: Record<string, string> };
   missionsClaimed: string[];
   village: { x: number; y: number; facing: 'left' | 'right' };
+  /** Jornada depois do portão: área atual (0 a 3; 4 = concluída) e capangas já derrotados nela. */
+  journey: { area: number; beaten: string[] };
 }
 
 export const DEFAULT_OPTIONS: Options = {
@@ -106,6 +108,7 @@ export function newSave(player: Player): SaveData {
     daily: { lastWelcomeBonus: null, completed: {} },
     missionsClaimed: [],
     village: { x: 10, y: 12, facing: 'right' },
+    journey: { area: 0, beaten: [] },
   };
 }
 
@@ -149,6 +152,7 @@ export function migrate(raw: unknown): SaveData {
     },
     daily: { ...base.daily, ...(isObj(data.daily) ? (data.daily as SaveData['daily']) : {}) },
     village: { ...base.village, ...(isObj(data.village) ? (data.village as SaveData['village']) : {}) },
+    journey: { ...base.journey, ...(isObj(data.journey) ? (data.journey as SaveData['journey']) : {}) },
     version: SAVE_VERSION,
   };
   return merged;

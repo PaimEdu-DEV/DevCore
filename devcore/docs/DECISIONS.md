@@ -2,6 +2,18 @@
 
 Registro das decisões tomadas sem consulta durante o desenvolvimento, com o motivo de cada uma.
 
+## Jornada (modo feira)
+
+O jogo vai rodar num estande de feira: quem passa precisa entender e jogar em poucos minutos.
+
+- **O portão leva à Jornada, não à seleção de chefes.** É um caminho em rolagem lateral com quatro áreas (Estrada do Portão, Floresta Sombria, Ruínas de Cristal, O Núcleo). Em cada área há dois capangas ("bugs") e depois o chefe. Vencer o chefe libera a próxima área; perder ou fugir volta para a Jornada. O progresso fica em `save.journey`.
+- **Desafios de uma linha.** Os capangas pedem uma única ideia: área 1 soma, área 2 if/else com número par, área 3 juntar textos, área 4 média e um if. As fases dos chefes foram reescritas no mesmo nível (dobro, subtração, esquiva com if, maior de dois, contar cópias, juntar textos, soma de três, corrigir negativos e um laço com uma linha a completar). O código inicial já traz a estrutura (o `if`, o `for`) e o jogador completa só o que falta. Ficam em `data/challenges/journey.ts`, com os mesmos ids de fase de antes. As lições do Orwin continuam no Treino.
+- **Bugs sem perda de vida.** Errar contra um capanga só mostra o esperado e o recebido; as dicas são grátis. A tensão fica para os chefes.
+- **Sem cutscene antes do chefe na Jornada.** Vai direto para a luta, para não travar a fila do estande.
+- **Cenários desenhados por código.** Não havia arte de cenário nos originais, então `journey/scenery.ts` gera em pixel art as camadas de parallax (céu, fundo, meio, chão, primeiro plano) com uma paleta por área, e os bugs. Sem imagens novas para baixar.
+- **Câmera mais aberta.** A vila passou de 320x180 para 448x252 e a Jornada usa 448x252, com escala fracionária para ocupar a tela. Assim os personagens ficam menores e aparece mais cenário. As batalhas continuam em 320x180.
+- **Teclas de código.** Acima de todo editor há uma barra com os parâmetros da função, operadores, números, `true`/`false`, parênteses e apagar. No celular dá para resolver os desafios sem abrir o teclado do aparelho. Os botões ◀ ▶ de andar aparecem em telas de toque ou estreitas.
+
 ## Estrutura e deploy
 
 - **App em `devcore/`, `vercel.json` dentro de `devcore/`.** O projeto no Vercel foi criado com *Root Directory* = `devcore` (preset Vite, Node 24), então o build já roda dentro dessa pasta; o antigo `vercel.json` da raiz fazia `cd devcore` e quebrava todos os deploys. Agora o `devcore/vercel.json` instala, compila, publica `dist` e faz o rewrite de SPA.

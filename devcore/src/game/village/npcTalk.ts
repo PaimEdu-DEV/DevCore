@@ -18,6 +18,7 @@ export type TalkAction =
   | 'daily'
   | 'missions'
   | 'bossSelect'
+  | 'journey'
   | 'cosmetics';
 
 export interface Talk {
@@ -144,9 +145,9 @@ export function propTalk(prop: PropId): Talk {
     case 'gate':
       return {
         speaker: null,
-        lines: ['O Portão do Reino. Fendas verdes pulsam na madeira. Do outro lado, os traidores esperam.'],
+        lines: ['O Portão do Reino. Fendas verdes pulsam na madeira. Do outro lado, uma estrada cheia de bugs leva até os traidores.'],
         choices: [
-          { label: 'Atravessar o portão', action: 'bossSelect' },
+          { label: 'Abrir o portão', action: 'journey' },
           { label: 'Ainda não', action: 'close' },
         ],
       };

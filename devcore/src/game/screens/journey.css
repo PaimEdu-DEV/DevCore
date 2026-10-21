@@ -1,0 +1,157 @@
+.journey {
+  position: relative;
+  display: flex;
+  height: 100%;
+  background: var(--black);
+  overflow: hidden;
+}
+
+.journey-stage {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.journey-stage .pixel-stage-wrap {
+  height: 100%;
+}
+
+/* Na luta, o editor ocupa a lateral (telas largas) ou a metade de baixo (celular). */
+.journey-fight {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: min(500px, 42vw);
+  border: 3px solid var(--gold);
+  background: rgba(22, 26, 34, 0.96);
+  box-shadow: 0 6px 0 var(--black);
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.journey-hud {
+  position: absolute;
+  top: calc(var(--px) * 3);
+  left: calc(var(--px) * 3);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--px) * 4);
+  padding: calc(var(--px) * 1) calc(var(--px) * 4);
+  background: rgba(18, 26, 48, 0.85);
+  border: calc(var(--px) * 0.75) solid var(--gold);
+  font-size: calc(var(--px) * 8);
+  color: var(--cream);
+  pointer-events: none;
+}
+
+.journey-steps {
+  display: flex;
+  gap: calc(var(--px) * 2);
+}
+
+.journey-step {
+  display: inline-grid;
+  place-items: center;
+  width: calc(var(--px) * 8);
+  height: calc(var(--px) * 8);
+  border: calc(var(--px) * 0.5) solid var(--gold-d);
+  color: var(--cream-d);
+  font-size: calc(var(--px) * 6);
+}
+
+.journey-step.done {
+  background: var(--lime-d);
+  border-color: var(--lime);
+  color: var(--lime-l);
+}
+
+.journey-exit {
+  position: absolute;
+  top: calc(var(--px) * 3);
+  right: calc(var(--px) * 3);
+  padding: 0 calc(var(--px) * 4);
+  font-size: calc(var(--px) * 8);
+  background: rgba(18, 26, 48, 0.85);
+  color: var(--cream);
+  border: calc(var(--px) * 0.75) solid var(--gold);
+  cursor: pointer;
+}
+
+.journey-exit:hover {
+  color: var(--gold-l);
+}
+
+.journey-boss {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: calc(var(--px) * 8);
+  padding: calc(var(--px) * 4) calc(var(--px) * 8);
+  max-width: 80%;
+}
+
+.journey-boss p {
+  margin: 0 0 calc(var(--px) * 4);
+}
+
+.journey-boss .btn {
+  font-size: calc(var(--px) * 7);
+}
+
+/* Botões de toque para andar: aparecem no celular e em telas sensíveis ao toque. */
+.journey-pad {
+  display: none;
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.journey-pad-btn {
+  pointer-events: auto;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: rgba(18, 26, 48, 0.8);
+  border: 3px solid var(--gold);
+  color: var(--cream);
+  font-size: 30px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.journey-pad-btn:active {
+  background: var(--gold-d);
+}
+
+@media (pointer: coarse), (max-width: 760px) {
+  .journey-pad {
+    display: flex;
+  }
+}
+
+@media (max-width: 900px) {
+  .journey {
+    flex-direction: column;
+  }
+
+  .journey.is-fighting .journey-stage {
+    flex: 0 0 34%;
+  }
+
+  .journey-fight {
+    position: static;
+    width: auto;
+    flex: 1;
+    border: 0;
+    border-top: 3px solid var(--gold);
+    box-shadow: none;
+  }
+}

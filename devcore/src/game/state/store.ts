@@ -11,6 +11,7 @@ export type Route =
   | { name: 'creation' }
   | { name: 'cutscene'; id: string; next: Route }
   | { name: 'village' }
+  | { name: 'journey' }
   | { name: 'battle'; villain: VillainId }
   | { name: 'lesson'; challengeId: string; back: Route }
   | { name: 'training'; back: Route }
@@ -39,7 +40,7 @@ interface State {
 
 const mq = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
-/** Rota inicial. ?licao=<id>, ?batalha=<vilão> e ?rota=vila|relampago|diario ajudam nos testes automáticos e na depuração. */
+/** Rota inicial. ?licao=<id>, ?batalha=<vilão> e ?rota=vila|jornada|relampago|diario ajudam nos testes automáticos e na depuração. */
 function initialRoute(): Route {
   if (typeof window === 'undefined') return { name: 'title' };
   const p = new URLSearchParams(window.location.search);
@@ -49,6 +50,7 @@ function initialRoute(): Route {
   if (battle === 'aldric' || battle === 'veyr' || battle === 'seraphine' || battle === 'entity') return { name: 'battle', villain: battle };
   const r = p.get('rota');
   if (r === 'vila') return { name: 'village' };
+  if (r === 'jornada') return { name: 'journey' };
   if (r === 'relampago') return { name: 'lightning' };
   if (r === 'diario') return { name: 'daily' };
   return { name: 'title' };

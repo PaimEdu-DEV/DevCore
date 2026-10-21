@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getImage, preloadImages, getCharacter, assetUrl, heroSpriteId } from '../assets/sprites';
 import { drawCharacter, drawHero } from '../engine/draw';
-import { PixelStage, VW, VH } from '../engine/PixelStage';
+import { PixelStage } from '../engine/PixelStage';
 import { DialogBox } from '../ui/DialogBox';
 import { PixelMenu } from '../ui/PixelMenu';
 import { isCancel, isConfirm, typingInField, useKeys } from '../ui/hooks';
@@ -17,6 +17,9 @@ import tileset from '../assets/tileset.json';
 import './village.css';
 
 const STEP_MS = 170;
+// Câmera mais aberta que a das batalhas: mostra mais da vila e deixa os personagens menores na tela.
+const VW = 448;
+const VH = 252;
 const COLS = tileset.columns;
 
 type Dir = 'up' | 'down' | 'left' | 'right';
@@ -208,6 +211,10 @@ export function VillageScreen() {
         return;
       case 'bossSelect':
         game.navigate({ name: 'bossSelect' });
+        return;
+      case 'journey':
+        audio.play('success');
+        game.navigate({ name: 'journey' });
         return;
       case 'save':
         game.update((d) => void (d.village = { x: player.current.x, y: player.current.y, facing: player.current.flip ? 'left' : 'right' }));
@@ -446,7 +453,7 @@ export function VillageScreen() {
 
   return (
     <main className="screen village" style={{ background: 'var(--black)' }}>
-      <PixelStage render={render} onPointerDown={onStageClick}>
+      <PixelStage render={render} onPointerDown={onStageClick} width={VW} height={VH} fractional>
         <div className="village-hud">
           <span className="village-name">{save.player.name}</span>
           <span>Nv {playerLevel(save)}</span>

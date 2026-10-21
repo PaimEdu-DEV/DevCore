@@ -19,7 +19,7 @@ for (const lang of ['javascript', 'python'] as const) {
     if (lang === 'python') await expect(page.locator('.ide-status')).toContainText('Python pronto', { timeout: 150_000 });
 
     // erro: contra-ataque
-    await setCode(page, lang === 'python' ? 'def reagir(postura):\n    return "atacar"\n' : 'function reagir(postura) {\n  return "atacar";\n}\n');
+    await setCode(page, lang === 'python' ? 'def dobro(forca):\n    return forca\n' : 'function dobro(forca) {\n  return forca;\n}\n');
     await page.keyboard.press('Control+Enter');
     await expect(page.locator('.hpbox-hero')).toContainText(/\d+\/100/);
     await page.waitForTimeout(700);
@@ -36,19 +36,20 @@ for (const lang of ['javascript', 'python'] as const) {
     await expect(page.locator('.dialog-text').first()).toContainText('derrotado', { timeout: 15_000 });
     await page.screenshot({ path: `${SHOTS}/23-battle-victory-${lang}.png` });
 
-    // cutscene de derrota do vilão e volta à vila
+    // cutscene de derrota do vilão e volta à Jornada, já na área 2
     await expect(page.getByRole('button', { name: /Pular cena/ })).toBeVisible({ timeout: 10_000 });
     await page.waitForTimeout(900);
     await page.screenshot({ path: `${SHOTS}/24-aldric-defeat-${lang}.png` });
     await page.getByRole('button', { name: /Pular cena/ }).click();
-    await expect(page.locator('.village-hud')).toBeVisible();
+    await expect(page.locator('.journey-area')).toContainText('Floresta Sombria');
     const save = await page.evaluate(() => JSON.parse(localStorage.getItem('devcore.save')!));
     expect(save.bosses.aldric.defeated).toBe(true);
+    expect(save.journey.area).toBe(1);
     expect(save.titles).toContain('breaker_aldric');
   });
 }
 
-test('herói zerado volta à vila consolado pelo Orwin', async ({ page }) => {
+test('herói zerado volta à Jornada consolado pelo Orwin', async ({ page }) => {
   await seedSave(page, { heroClass: 'mage' });
   await page.goto('/?batalha=veyr');
   await page.keyboard.press('Enter');
@@ -66,5 +67,5 @@ test('herói zerado volta à vila consolado pelo Orwin', async ({ page }) => {
   await page.waitForTimeout(1200);
   await page.screenshot({ path: `${SHOTS}/25-consolation.png` });
   await page.getByRole('button', { name: /Pular cena/ }).click();
-  await expect(page.locator('.village-hud')).toBeVisible();
+  await expect(page.locator('.journey-hud')).toBeVisible();
 });

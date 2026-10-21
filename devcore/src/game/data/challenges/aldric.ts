@@ -1,6 +1,6 @@
 import { same, type Challenge } from './types';
 
-// Aldric: variáveis, tipos, comparações e if/else. 3 lições + 2 fases.
+// Aldric: variáveis, tipos, comparações e if/else. 3 lições (as fases do chefe ficam em journey.ts).
 export const ALDRIC_CHALLENGES: Challenge[] = [
   {
     id: 'aldric-l1',
@@ -149,99 +149,5 @@ A ordem das perguntas importa!`,
     },
     xp: 55,
     coins: 20,
-  },
-  {
-    id: 'aldric-b1',
-    concept: 'basics',
-    villain: 'aldric',
-    kind: 'boss',
-    phase: 1,
-    title: 'Leia a postura',
-    statement: `Aldric alterna entre duas posturas. Escreva \`{fn}(postura)\`:
-
-- se a postura for \`"defesa"\`, devolva \`"atacar"\` (ele baixou a espada!);
-- se a postura for \`"ataque"\`, devolva \`"defender"\`.
-
-Use \`==\` para comparar textos.`,
-    functionName: same('reagir'),
-    starter: {
-      python: `def reagir(postura):
-    # compare a postura e devolva a reação certa
-    pass
-`,
-      javascript: `function reagir(postura) {
-  // compare a postura e devolva a reação certa
-}
-`,
-    },
-    tests: [
-      { args: ['defesa'], expected: 'atacar' },
-      { args: ['ataque'], expected: 'defender' },
-      { args: ['defesa'], expected: 'atacar', hidden: true },
-    ],
-    hints: [
-      'É um if com duas possibilidades.',
-      'Pergunte se postura == "defesa". Se sim, return "atacar".',
-      {
-        python: 'Estrutura: if postura == "defesa": (return de um texto) e else: (return do outro).',
-        javascript: 'Estrutura: if (postura === "defesa") { return ... } else { return ... }',
-      },
-    ],
-    mentor: {
-      success: 'Você leu a postura dele como quem lê um livro aberto.',
-      failure: 'Aldric mudou de postura e você não acompanhou. Confira os textos: "atacar" e "defender", sem acento e em minúsculas.',
-    },
-    xp: 80,
-    coins: 30,
-  },
-  {
-    id: 'aldric-b2',
-    concept: 'basics',
-    villain: 'aldric',
-    kind: 'boss',
-    phase: 2,
-    title: 'O golpe certo',
-    statement: `Agora Aldric levanta o escudo de verdade. Escreva \`{fn}(postura, forca, escudo)\` para calcular o dano do seu golpe:
-
-- postura \`"ataque"\` (guarda aberta): dano = \`forca * 2\`;
-- postura \`"defesa"\`: dano = \`forca - escudo\`, mas **nunca menor que 0**.
-
-Exemplos: \`{fn}("ataque", 10, 99)\` → \`20\` · \`{fn}("defesa", 10, 4)\` → \`6\` · \`{fn}("defesa", 3, 8)\` → \`0\``,
-    functionName: same('golpe'),
-    starter: {
-      python: `def golpe(postura, forca, escudo):
-    dano = 0
-    # calcule o dano conforme a postura
-    return dano
-`,
-      javascript: `function golpe(postura, forca, escudo) {
-  let dano = 0;
-  // calcule o dano conforme a postura
-  return dano;
-}
-`,
-    },
-    tests: [
-      { args: ['ataque', 10, 99], expected: 20 },
-      { args: ['defesa', 10, 4], expected: 6 },
-      { args: ['defesa', 3, 8], expected: 0 },
-      { args: ['defesa', 7, 7], expected: 0, hidden: true },
-      { args: ['ataque', 0, 5], expected: 0, hidden: true },
-      { args: ['defesa', 50, 1], expected: 49, hidden: true },
-    ],
-    hints: [
-      'Primeiro decida pela postura, depois calcule. São dois caminhos.',
-      'No caminho da defesa, calcule forca - escudo e, se der negativo, troque por 0.',
-      {
-        python: 'Na defesa: calcule dano = forca - escudo e depois corrija com if dano < 0: dano = 0. (max(0, ...) também resolve.)',
-        javascript: 'Na defesa: calcule dano = forca - escudo e depois corrija com if (dano < 0) dano = 0. (Math.max(0, ...) também resolve.)',
-      },
-    ],
-    mentor: {
-      success: 'Escudo, postura, limite. Você calculou tudo e o general ficou sem resposta.',
-      failure: 'Pense no escudo maior que a força: dano negativo não existe.',
-    },
-    xp: 120,
-    coins: 50,
   },
 ];

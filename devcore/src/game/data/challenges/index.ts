@@ -4,11 +4,12 @@ import { VEYR_CHALLENGES } from './veyr';
 import { SERAPHINE_CHALLENGES } from './seraphine';
 import { ENTITY_CHALLENGES } from './entity';
 import { EXTRA_CHALLENGES } from './extras';
+import { JOURNEY_CHALLENGES } from './journey';
 import type { Challenge } from './types';
 
 export * from './types';
 
-export const ALL_CHALLENGES: Challenge[] = [...ALDRIC_CHALLENGES, ...VEYR_CHALLENGES, ...SERAPHINE_CHALLENGES, ...ENTITY_CHALLENGES, ...EXTRA_CHALLENGES];
+export const ALL_CHALLENGES: Challenge[] = [...ALDRIC_CHALLENGES, ...VEYR_CHALLENGES, ...SERAPHINE_CHALLENGES, ...ENTITY_CHALLENGES, ...JOURNEY_CHALLENGES, ...EXTRA_CHALLENGES];
 
 export const EXTRAS = EXTRA_CHALLENGES;
 
@@ -20,6 +21,11 @@ export function getChallenge(id: string): Challenge {
 
 export function lessonsFor(villain: VillainId): Challenge[] {
   return ALL_CHALLENGES.filter((c) => c.villain === villain && c.kind === 'lesson');
+}
+
+/** Capangas da Jornada no caminho até o chefe, na ordem em que aparecem. */
+export function minionsFor(villain: VillainId): Challenge[] {
+  return ALL_CHALLENGES.filter((c) => c.villain === villain && c.kind === 'minion');
 }
 
 export function bossPhases(villain: VillainId): Challenge[] {
