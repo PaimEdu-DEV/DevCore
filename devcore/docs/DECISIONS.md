@@ -4,7 +4,7 @@ Registro das decisões tomadas sem consulta durante o desenvolvimento, com o mot
 
 ## Estrutura e deploy
 
-- **App em `devcore/`, `vercel.json` na raiz do repositório.** O `vercel.json` da raiz instala e compila dentro de `devcore/` e publica `devcore/dist`. No Vercel, o *Root Directory* deve continuar na raiz do repositório.
+- **App em `devcore/`, `vercel.json` dentro de `devcore/`.** O projeto no Vercel foi criado com *Root Directory* = `devcore` (preset Vite, Node 24), então o build já roda dentro dessa pasta; o antigo `vercel.json` da raiz fazia `cd devcore` e quebrava todos os deploys. Agora o `devcore/vercel.json` instala, compila, publica `dist` e faz o rewrite de SPA.
 - **TypeScript 7 (`tsc` nativo).** Era a versão estável no momento; `npm run typecheck` e `npm run build` passam com ele.
 - **Originais dos sprites copiados para `art/source/` com nomes legíveis.** O script de processamento lê dali (ou de `SPRITES_SRC`). Assim o processo é reproduzível em qualquer máquina, e a pasta Downloads nunca é usada em runtime.
 

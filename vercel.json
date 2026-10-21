@@ -1,7 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd devcore && npm install",
-  "buildCommand": "cd devcore && npm run build",
-  "outputDirectory": "devcore/dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}

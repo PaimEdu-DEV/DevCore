@@ -10,4 +10,4 @@ npm install
 npm run dev
 ```
 
-O deploy no Vercel usa o `vercel.json` desta raiz (Root Directory = raiz do repositório).
+O deploy no Vercel usa o `devcore/vercel.json` (Root Directory = `devcore`).

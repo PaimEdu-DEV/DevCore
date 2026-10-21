@@ -99,10 +99,10 @@ Desativado por padrão. Para ativar, siga `docs/FIREBASE_SETUP.md`: crie o proje
 
 ## Deploy no Vercel
 
-O `vercel.json` fica na **raiz do repositório** e já instala e compila dentro de `devcore/`, publica `devcore/dist` e faz o rewrite de SPA (rotas como `/debug/sprites` funcionam).
+O `vercel.json` fica em **`devcore/`**: instala, compila, publica `dist` e faz o rewrite de SPA (rotas como `/debug/sprites` funcionam).
 
 1. No Vercel: **Add New → Project** → importe o repositório.
-2. Deixe o **Root Directory** na raiz (não troque para `devcore`). *Framework Preset*: Other.
+2. Defina o **Root Directory** como `devcore`. *Framework Preset*: Vite. Node.js 24.x.
 3. (Opcional) Adicione as variáveis `VITE_FIREBASE_*` em Settings → Environment Variables.
 4. Deploy. Cada push na `main` publica sozinho.
 
