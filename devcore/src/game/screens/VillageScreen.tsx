@@ -1,3 +1,4 @@
+import { HOUSES, isHouseTile, drawHouse } from '../village/architecture';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getImage, preloadImages, getCharacter, assetUrl, heroSpriteId } from '../assets/sprites';
 import { drawCharacter, drawHero } from '../engine/draw';
@@ -56,7 +57,7 @@ function buildStaticLayer(): HTMLCanvasElement | null {
   const ctx = c.getContext('2d')!;
   for (let y = 0; y < MAP_H; y++) {
     for (let x = 0; x < MAP_W; x++) {
-      const name = tileAt(x, y).tile;
+      const name = isHouseTile(x,y) || ['tree','fence','well','lamp','sign','crate','bush'].includes(tileAt(x,y).tile) ? 'grass' : tileAt(x,y).tile;
       if (name === 'water') continue;
       const i = TILE_INDEX[name];
       ctx.drawImage(img, (i % COLS) * TILE, Math.floor(i / COLS) * TILE, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
@@ -365,6 +366,13 @@ export function VillageScreen() {
             { flip: p.flip },
           ),
       });
+    }
+    for (const h of HOUSES) actors.push({y:h.y+2,draw:()=>drawHouse(ctx,h.x*TILE-camX,h.y*TILE-camY,h.w)});
+    if(tiles) for(let y=0;y<MAP_H;y++) for(let x=0;x<MAP_W;x++) {
+      const name=tileAt(x,y).tile;
+      if(!['tree','fence','well','lamp','sign','crate','bush'].includes(name)) continue;
+      const i=TILE_INDEX[name];
+      actors.push({y,draw:()=>ctx.drawImage(tiles,(i%COLS)*TILE,Math.floor(i/COLS)*TILE,TILE,TILE,x*TILE-camX,y*TILE-camY,TILE,TILE)});
     }
     actors.sort((a, b) => a.y - b.y).forEach((a) => a.draw());
 

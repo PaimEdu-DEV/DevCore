@@ -205,8 +205,8 @@ export function JourneyScreen() {
       const t = died ? Math.min(1, (now - died) / 700) : 0;
       if (t >= 1) return;
       const hurt = bugHurt.current[i] && now - bugHurt.current[i] < 300;
-      drawBug(ctx, x + (hurt ? Math.round(Math.sin(now / 20) * 2) : 0), GROUND_Y + 2 - Math.round(t * 10), now + i * 333, palette.bug, h.x < MINION_X[i] ? -1 : 1, t);
-      if (!died) drawPixelText(ctx, 'BUG', x, GROUND_Y - 30 + Math.round(Math.sin(now / 300) * 1), '#F3E9D2', { outline: '#0A0A0F', align: 'center' });
+      drawBug(ctx, x + (hurt ? Math.round(Math.sin(now / 20) * 2) : 0), GROUND_Y + 2, now + i * 333, palette.bug, h.x < MINION_X[i] ? -1 : 1, t);
+      if (!died) drawPixelText(ctx, 'BUG', x, GROUND_Y - 46 + Math.round(Math.sin(now / 300) * 1), '#F3E9D2', { outline: '#0A0A0F', align: 'center' });
     });
 
     // chefe

@@ -26,13 +26,13 @@ interface Palette {
 
 export const PALETTES: Record<Theme, Palette> = {
   meadow: {
-    sky: ['#5FB4E8', '#9AD4F2', '#D8F1FF'],
+    sky: ['#506b83', '#8caaa9', '#cfceb1'],
     far: '#7C9CC4', farLight: '#A9C2DE',
-    mid: '#3F8F45', midDark: '#2C6B36', midLight: '#62B055',
-    grass: '#5DBB4A', grassLight: '#8EDB5C', grassDark: '#3D8C3A',
+    mid: '#506c51', midDark: '#2C6B36', midLight: '#789063',
+    grass: '#62734a', grassLight: '#94a064', grassDark: '#3D8C3A',
     dirt: '#8A5A36', dirtDark: '#5E3B22', path: '#C9A06A', pathLight: '#E3C08B',
     accent: '#FFF3B0',
-    bug: ['#E2483D', '#9E2B2B', '#FFB0A0'],
+    bug: ['#587643', '#16251e', '#9BFF1A'],
   },
   forest: {
     sky: ['#2B2F5E', '#8A4F7D', '#F2A65A'],
@@ -210,11 +210,14 @@ function pine(ctx: CanvasRenderingContext2D, x: number, base: number, h: number,
 }
 
 function oak(ctx: CanvasRenderingContext2D, x: number, base: number, s: number, p: Palette) {
-  ctx.fillStyle = p.dirtDark;
-  ctx.fillRect(x - 2, base - s, 5, s);
-  disc(ctx, x, base - s - 4, Math.floor(s * 0.75), p.midDark);
-  disc(ctx, x - 3, base - s - 7, Math.floor(s * 0.55), p.mid);
-  disc(ctx, x - 5, base - s - 9, Math.floor(s * 0.25), p.midLight);
+  ctx.fillStyle=p.dirtDark; ctx.fillRect(x-2,base-s,5,s);
+  ctx.fillStyle='#7c7152'; ctx.fillRect(x-2,base-s,1,s-2);
+  for(const [dx,dy,rad] of [[0,0,0.7],[-0.4,-0.2,0.5],[0.35,-0.3,0.55],[0,-0.6,0.5]]) {
+    const cx=x+Math.round(dx*s), cy=base-s+Math.round(dy*s);
+    disc(ctx,cx,cy,Math.round(rad*s),p.midDark);
+    disc(ctx,cx-2,cy-2,Math.round(rad*s)-2,p.mid);
+    disc(ctx,cx-3,cy-4,Math.max(2,Math.round(rad*s/2)),p.midLight);
+  }
 }
 
 function crystal(ctx: CanvasRenderingContext2D, x: number, base: number, h: number, color: string, light: string) {
@@ -385,53 +388,23 @@ function mix(a: string, b: string, t: number): string {
  * `look` é -1 (olhando para a esquerda) ou 1. `dying` vai de 0 a 1.
  */
 export function drawBug(ctx: CanvasRenderingContext2D, x: number, feetY: number, now: number, colors: [string, string, string], look: -1 | 1, dying = 0): void {
-  const [body, dark, light] = colors;
-  const bob = Math.round(Math.sin(now / 180) * 1.5);
-  const y = feetY - 12 + bob;
-  ctx.save();
-  if (dying > 0) ctx.globalAlpha = Math.max(0, 1 - dying);
-  // sombra
-  ctx.fillStyle = 'rgba(0,0,0,0.35)';
-  ctx.fillRect(x - 9, feetY - 1, 18, 2);
-  // pernas (3 de cada lado, mexendo)
-  ctx.fillStyle = dark;
-  for (let i = 0; i < 3; i++) {
-    const k = Math.sin(now / 90 + i * 2) > 0 ? 1 : 0;
-    ctx.fillRect(x - 10 + i * 3, y + 9 + k, 2, 3 - k);
-    ctx.fillRect(x + 4 + i * 3, y + 9 + (1 - k), 2, 2 + k);
-  }
-  // corpo (elipse em pixels)
-  for (let dy = -7; dy <= 7; dy++) {
-    const half = Math.floor(Math.sqrt(1 - (dy / 7.5) ** 2) * 10);
-    ctx.fillStyle = dark;
-    ctx.fillRect(x - half - 1, y + dy, half * 2 + 3, 1);
-    ctx.fillStyle = dy < -3 ? light : body;
-    ctx.fillRect(x - half, y + dy, half * 2 + 1, 1);
-  }
-  // listra das costas
-  ctx.fillStyle = dark;
-  ctx.fillRect(x - 1, y - 6, 2, 12);
-  // olhos grandes
-  const ex = x + look * 4;
-  for (const o of [-3, 3]) {
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(ex + o - 2, y - 3, 4, 4);
-    ctx.fillStyle = '#0A0A0F';
-    ctx.fillRect(ex + o - (look < 0 ? 2 : 0), y - 2, 2, 2);
-  }
-  // antenas
-  ctx.fillStyle = dark;
-  const wig = Math.round(Math.sin(now / 150) * 1);
-  ctx.fillRect(ex - 4, y - 10, 1, 4);
-  ctx.fillRect(ex + 4, y - 10, 1, 4);
-  ctx.fillStyle = light;
-  ctx.fillRect(ex - 5 + wig, y - 11, 2, 2);
-  ctx.fillRect(ex + 4 - wig, y - 11, 2, 2);
-  // glitch: pixels soltos piscando
-  if (Math.floor(now / 120) % 3 === 0) {
-    ctx.fillStyle = '#9BFF1A';
-    ctx.fillRect(x - 12 + (Math.floor(now / 40) % 24), y - 8 + (Math.floor(now / 70) % 16), 2, 1);
-    ctx.fillRect(x + 8 - (Math.floor(now / 55) % 18), y + 4 - (Math.floor(now / 90) % 10), 1, 1);
-  }
+  void colors;
+  ctx.save(); ctx.translate(Math.round(x), Math.round(feetY)); ctx.scale(look,1); ctx.globalAlpha=1-dying;
+  const r=(x:number,y:number,w:number,h:number,c:string)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h);};
+  r(-10,-1,22,2,'#223125');
+  r(-7,-11,5,10,'#11191b'); r(3,-12,5,11,'#11191b');
+  r(-8,-3,7,3,'#292e2c'); r(3,-3,8,3,'#292e2c');
+  r(-6,-11,3,5,'#566748'); r(4,-12,3,4,'#354c38');
+  ctx.translate(Math.floor(now/420)%2+Math.round(dying*5),Math.round(dying*20));
+  r(-9,-26,16,16,'#10191b'); r(-7,-25,11,11,'#303c36');
+  r(-6,-25,3,8,'#53604b'); r(-8,-14,5,4,'#1c2828'); r(2,-14,5,3,'#1c2828');
+  r(-11,-25,5,10,'#11191b'); r(-10,-23,3,9,'#556f44');
+  r(-10,-15,3,5,'#779252'); r(-9,-11,1,3,'#9ca775');
+  r(5,-24,6,5,'#10191b'); r(8,-22,7,4,'#597747');
+  r(13,-23,4,3,'#829455'); r(16,-23,3,1,'#a6af79'); r(16,-20,3,1,'#829455');
+  r(-5,-36,13,12,'#11191b'); r(-4,-35,10,9,'#587643');
+  r(-3,-35,7,3,'#87975b'); r(-4,-32,3,5,'#334c32');
+  r(1,-32,7,3,'#16251e'); r(2,-31,2,1,'#9BFF1A'); r(6,-31,1,1,'#9BFF1A');
+  r(2,-28,6,3,'#19231e'); r(3,-28,3,1,'#c4bd8b'); r(1,-25,4,2,'#68814a');
   ctx.restore();
 }
