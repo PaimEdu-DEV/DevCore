@@ -1,3 +1,4 @@
+import { getImage } from '../assets/sprites';
 // Cenários da Jornada: camadas de parallax desenhadas em pixel art por código
 // (céu, fundo distante, meio e chão), uma paleta por área.
 
@@ -295,6 +296,18 @@ function drawGround(ctx: CanvasRenderingContext2D, w: number, theme: Theme, p: P
     ctx.fillStyle = r() < 0.5 ? p.dirtDark : p.grassDark;
     ctx.fillRect(Math.floor(r() * w), GROUND_Y + 11 + Math.floor(r() * 26), 2, 2);
   }
+  // Broken strata and clustered embedded stones replace isolated dirt noise.
+  for(let x=0;x<w;x+=5) {
+    const edge=GROUND_Y+8+Math.round(Math.sin(x*.11)*2);
+    ctx.fillStyle=p.dirtDark;ctx.fillRect(x,edge,5,2);
+    ctx.fillStyle=p.path;ctx.fillRect(x,GROUND_Y+7,5,Math.max(1,edge-GROUND_Y-7));
+    if(x%15===0) {
+      const y=GROUND_Y+17+Math.round(Math.sin(x)*4);
+      ctx.fillStyle=p.dirtDark;ctx.fillRect(x,y,9,4);
+      ctx.fillStyle='#79745a';ctx.fillRect(x,y,7,2);
+      ctx.fillStyle='#989077';ctx.fillRect(x+1,y,4,1);
+    }
+  }
   // detalhes na grama acima da trilha
   for (let i = 0; i < 18; i++) {
     const x = Math.floor(r() * w);
@@ -389,22 +402,15 @@ function mix(a: string, b: string, t: number): string {
  */
 export function drawBug(ctx: CanvasRenderingContext2D, x: number, feetY: number, now: number, colors: [string, string, string], look: -1 | 1, dying = 0): void {
   void colors;
-  ctx.save(); ctx.translate(Math.round(x), Math.round(feetY)); ctx.scale(look,1); ctx.globalAlpha=1-dying;
-  const r=(x:number,y:number,w:number,h:number,c:string)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h);};
-  r(-10,-1,22,2,'#223125');
-  r(-7,-11,5,10,'#11191b'); r(3,-12,5,11,'#11191b');
-  r(-8,-3,7,3,'#292e2c'); r(3,-3,8,3,'#292e2c');
-  r(-6,-11,3,5,'#566748'); r(4,-12,3,4,'#354c38');
-  ctx.translate(Math.floor(now/420)%2+Math.round(dying*5),Math.round(dying*20));
-  r(-9,-26,16,16,'#10191b'); r(-7,-25,11,11,'#303c36');
-  r(-6,-25,3,8,'#53604b'); r(-8,-14,5,4,'#1c2828'); r(2,-14,5,3,'#1c2828');
-  r(-11,-25,5,10,'#11191b'); r(-10,-23,3,9,'#556f44');
-  r(-10,-15,3,5,'#779252'); r(-9,-11,1,3,'#9ca775');
-  r(5,-24,6,5,'#10191b'); r(8,-22,7,4,'#597747');
-  r(13,-23,4,3,'#829455'); r(16,-23,3,1,'#a6af79'); r(16,-20,3,1,'#829455');
-  r(-5,-36,13,12,'#11191b'); r(-4,-35,10,9,'#587643');
-  r(-3,-35,7,3,'#87975b'); r(-4,-32,3,5,'#334c32');
-  r(1,-32,7,3,'#16251e'); r(2,-31,2,1,'#9BFF1A'); r(6,-31,1,1,'#9BFF1A');
-  r(2,-28,6,3,'#19231e'); r(3,-28,3,1,'#c4bd8b'); r(1,-25,4,2,'#68814a');
+  const img=getImage('assets/world-v2/zombie.png'); if(!img)return;
+  ctx.save();ctx.translate(Math.round(x),Math.round(feetY));
+  ctx.fillStyle='#283327';ctx.fillRect(-10,-1,23,2);
+  ctx.scale(-look,1);ctx.globalAlpha=1-dying;
+  const collapse=Math.round(dying*24);
+  const sway=Math.floor(now/480)%2;
+  // Feet remain fixed; torso sway is a one-pixel crop translation.
+  const legs=12,upper=img.height-legs;
+  ctx.drawImage(img,0,0,img.width,upper,-Math.floor(img.width/2)+sway,-img.height+collapse,img.width,upper);
+  ctx.drawImage(img,0,upper,img.width,legs,-Math.floor(img.width/2),-legs,img.width,legs);
   ctx.restore();
 }

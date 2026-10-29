@@ -1,0 +1,58 @@
+[
+  {
+    "name": "house",
+    "width": 120,
+    "height": 128,
+    "alpha": true,
+    "transparentPixels": 3563,
+    "channels": 4
+  },
+  {
+    "name": "forge",
+    "width": 120,
+    "height": 106,
+    "alpha": true,
+    "transparentPixels": 3030,
+    "channels": 4
+  },
+  {
+    "name": "oak",
+    "width": 60,
+    "height": 78,
+    "alpha": true,
+    "transparentPixels": 1621,
+    "channels": 4
+  },
+  {
+    "name": "well",
+    "width": 32,
+    "height": 45,
+    "alpha": true,
+    "transparentPixels": 434,
+    "channels": 4
+  },
+  {
+    "name": "gate",
+    "width": 168,
+    "height": 133,
+    "alpha": true,
+    "transparentPixels": 3527,
+    "channels": 4
+  },
+  {
+    "name": "zombie",
+    "width": 38,
+    "height": 42,
+    "alpha": true,
+    "transparentPixels": 926,
+    "channels": 4
+  },
+  {
+    "name": "valley",
+    "width": 512,
+    "height": 341,
+    "alpha": false,
+    "transparentPixels": 0,
+    "channels": 4
+  }
+]

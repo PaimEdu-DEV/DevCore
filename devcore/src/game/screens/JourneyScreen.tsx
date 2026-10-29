@@ -5,7 +5,7 @@ import { Effects } from '../engine/effects';
 import { drawPixelText } from '../engine/pixelFont';
 import { DialogBox } from '../ui/DialogBox';
 import { typingInField, useKeys, isConfirm } from '../ui/hooks';
-import { preloadImages, getCharacter, heroSpriteId } from '../assets/sprites';
+import { preloadImages, getImage, getCharacter, heroSpriteId } from '../assets/sprites';
 import { minionsFor } from '../data/challenges';
 import { villainInfo } from '../data/characters';
 import { AREAS, AREA_W, BOSS_X, MINION_X, START_X } from '../journey/areas';
@@ -66,7 +66,7 @@ export function JourneyScreen() {
   useEffect(() => {
     if (!save) return;
     const heroId = heroSpriteId(save.player.gender, save.player.heroClass);
-    void preloadImages([getCharacter(heroId).image, ...AREAS.map((a) => getCharacter(a.villain).image), LANG_FX[language].image, 'assets/fx/impact.png', 'assets/cosmetics/hat_mage.png', 'assets/portraits/orwin.png']);
+    void preloadImages(['assets/world-v2/valley.png', 'assets/world-v2/zombie.png', 'assets/world-v2/oak.png', getCharacter(heroId).image, ...AREAS.map((a) => getCharacter(a.villain).image), LANG_FX[language].image, 'assets/fx/impact.png', 'assets/cosmetics/hat_mage.png', 'assets/portraits/orwin.png']);
     audio.playMusic('journey');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -191,6 +191,15 @@ export function JourneyScreen() {
     drawLayer(ctx, sc.sky, camX, 0.05, VW);
     drawLayer(ctx, sc.far, camX, 0.2, VW);
     drawLayer(ctx, sc.mid, camX, 0.5, VW);
+    const valley=area.theme==='meadow' ? getImage('assets/world-v2/valley.png') : null;
+    if(valley) {
+      const offset=Math.round(camX*.12), period=valley.width;
+      for(let i=Math.floor(offset/period);i<=Math.floor((offset+VW)/period);i++) {
+        ctx.save();ctx.translate(i*period-offset,0);
+        if(i%2){ctx.translate(period,0);ctx.scale(-1,1);}
+        ctx.drawImage(valley,0,200-valley.height);ctx.restore();
+      }
+    }
     drawLayer(ctx, sc.ground, camX, 1, VW);
 
     // placa no começo e marcadores

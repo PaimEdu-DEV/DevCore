@@ -1,4 +1,6 @@
-import { HOUSES, isHouseTile, drawHouse } from '../village/architecture';
+import { drawProp } from '../village/props';
+import { drawTerrain } from '../village/terrain';
+import { HOUSES, isHouseTile, drawHouse, drawOak, WORLD_ASSETS } from '../village/architecture';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getImage, preloadImages, getCharacter, assetUrl, heroSpriteId } from '../assets/sprites';
 import { drawCharacter, drawHero } from '../engine/draw';
@@ -55,10 +57,12 @@ function buildStaticLayer(): HTMLCanvasElement | null {
   c.width = MAP_W * TILE;
   c.height = MAP_H * TILE;
   const ctx = c.getContext('2d')!;
+  ctx.imageSmoothingEnabled=false;
+  drawTerrain(ctx);
   for (let y = 0; y < MAP_H; y++) {
     for (let x = 0; x < MAP_W; x++) {
       const name = isHouseTile(x,y) || ['tree','fence','well','lamp','sign','crate','bush'].includes(tileAt(x,y).tile) ? 'grass' : tileAt(x,y).tile;
-      if (name === 'water') continue;
+      if (['water','grass','grass2','flowers','path','pathgrass','plaza','stonewall','gate','gatetop'].includes(name)) continue;
       const i = TILE_INDEX[name];
       ctx.drawImage(img, (i % COLS) * TILE, Math.floor(i / COLS) * TILE, TILE, TILE, x * TILE, y * TILE, TILE, TILE);
     }
@@ -100,7 +104,7 @@ export function VillageScreen() {
 
   useEffect(() => {
     const hero = save ? heroSpriteId(save.player.gender, save.player.heroClass) : 'hero_alchemist_m';
-    void preloadImages([tileset.image, getCharacter(hero).image, ...NPCS.map((n) => getCharacter(n.id).image), 'assets/cosmetics/hat_mage.png']).then(() => {
+    void preloadImages([...WORLD_ASSETS, tileset.image, getCharacter(hero).image, ...NPCS.map((n) => getCharacter(n.id).image), 'assets/cosmetics/hat_mage.png']).then(() => {
       staticLayer = buildStaticLayer();
     });
     if (!staticLayer) staticLayer = buildStaticLayer();
@@ -321,9 +325,9 @@ export function VillageScreen() {
 
     // ---- câmera ----
     const camX = Math.round(Math.max(0, Math.min(MAP_W * TILE - VW, px - VW / 2)));
-    const camY = Math.round(Math.max(0, Math.min(MAP_H * TILE - VH, py - 24 - VH / 2)));
+    const camY = Math.round(Math.max(-72, Math.min(MAP_H * TILE - VH, py - 24 - VH / 2)));
 
-    ctx.fillStyle = '#0A0A0F';
+    ctx.fillStyle = '#354537';
     ctx.fillRect(0, 0, VW, VH);
     staticLayer ??= buildStaticLayer();
     const tiles = getImage(tileset.image);
@@ -339,17 +343,12 @@ export function VillageScreen() {
     }
     if (staticLayer) ctx.drawImage(staticLayer, -camX, -camY);
 
-    // brilho verde do portão
-    const glow = 0.25 + 0.2 * Math.sin(now / 400);
-    ctx.fillStyle = `rgba(155,255,26,${glow})`;
-    ctx.fillRect(10 * TILE - camX + 10, 1 * TILE - camY + 2, TILE * 2 - 20, TILE - 4);
-
     // ---- personagens ordenados por profundidade ----
     const actors: { y: number; draw: () => void }[] = NPCS.map((n) => ({
       y: n.y,
       draw: () => {
         const talking = talk?.talk.speaker === n.id;
-        drawCharacter(ctx, n.id, talking ? 'talk' : 'idle', now + n.x * 137, n.x * TILE + TILE / 2 - camX, n.y * TILE + TILE - 2 - camY, { flip: n.flip });
+        drawCharacter(ctx, n.id, talking ? 'talk' : 'idle', now + n.x * 137, n.x * TILE + TILE / 2 - camX, n.y * TILE + TILE - 2 - camY, { flip: n.flip, scale: 0.75 });
       },
     }));
     if (save) {
@@ -363,17 +362,18 @@ export function VillageScreen() {
             p.moving || p.path.length ? now - p.walkStart : now,
             Math.round(px - camX),
             Math.round(py - camY),
-            { flip: p.flip },
+            { flip: p.flip, scale: 0.75 },
           ),
       });
     }
-    for (const h of HOUSES) actors.push({y:h.y+2,draw:()=>drawHouse(ctx,h.x*TILE-camX,h.y*TILE-camY,h.w)});
+    for (const h of HOUSES) actors.push({y:h.y+2,draw:()=>drawHouse(ctx,h.x*TILE-camX,h.y*TILE-camY,h.w,h.y===6)});
     if(tiles) for(let y=0;y<MAP_H;y++) for(let x=0;x<MAP_W;x++) {
       const name=tileAt(x,y).tile;
       if(!['tree','fence','well','lamp','sign','crate','bush'].includes(name)) continue;
-      const i=TILE_INDEX[name];
-      actors.push({y,draw:()=>ctx.drawImage(tiles,(i%COLS)*TILE,Math.floor(i/COLS)*TILE,TILE,TILE,x*TILE-camX,y*TILE-camY,TILE,TILE)});
+      if(name==='tree') { if(y===MAP_H-1) actors.push({y,draw:()=>drawProp(ctx,'bush',x*TILE-camX,y*TILE-camY,x,y)}); else if ((x+y)%3===0) actors.push({y,draw:()=>drawOak(ctx,x*TILE+12-camX,(y+1)*TILE-camY)}); continue; }
+      actors.push({y,draw:()=>drawProp(ctx,name,x*TILE-camX,y*TILE-camY,x,y)});
     }
+    actors.push({y:1,draw:()=>{const gate=getImage('assets/world-v2/gate.png');if(gate)ctx.drawImage(gate,11*TILE-gate.width/2-camX,2*TILE-gate.height-camY);}});
     actors.sort((a, b) => a.y - b.y).forEach((a) => a.draw());
 
     // dica de interação
@@ -400,7 +400,7 @@ export function VillageScreen() {
     const px = p.x * TILE + TILE / 2;
     const py = p.y * TILE + TILE - 2;
     const camX = Math.max(0, Math.min(MAP_W * TILE - VW, px - VW / 2));
-    const camY = Math.max(0, Math.min(MAP_H * TILE - VH, py - 24 - VH / 2));
+    const camY = Math.max(-72, Math.min(MAP_H * TILE - VH, py - 24 - VH / 2));
     const wx = vx + camX;
     const wy = vy + camY;
     // clique num NPC (área do corpo, acima do tile)
