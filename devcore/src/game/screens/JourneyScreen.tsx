@@ -9,7 +9,7 @@ import { preloadImages, getImage, getCharacter, heroSpriteId } from '../assets/s
 import { minionsFor } from '../data/challenges';
 import { villainInfo } from '../data/characters';
 import { AREAS, AREA_W, BOSS_X, MINION_X, START_X } from '../journey/areas';
-import { GROUND_Y, PALETTES, drawBug, drawLayer, getScenery } from '../journey/scenery';
+import { GROUND_Y, PALETTES, ENEMY_ASSETS, drawBug, drawLayer, getScenery } from '../journey/scenery';
 import { game, useGame, reducedMotion } from '../state/store';
 import { languageOf } from '../state/save';
 import { grant } from '../state/rewards';
@@ -66,7 +66,7 @@ export function JourneyScreen() {
   useEffect(() => {
     if (!save) return;
     const heroId = heroSpriteId(save.player.gender, save.player.heroClass);
-    void preloadImages(['assets/world-v2/valley.png', 'assets/world-v2/zombie.png', 'assets/world-v2/oak.png', getCharacter(heroId).image, ...AREAS.map((a) => getCharacter(a.villain).image), LANG_FX[language].image, 'assets/fx/impact.png', 'assets/cosmetics/hat_mage.png', 'assets/portraits/orwin.png']);
+    void preloadImages([...ENEMY_ASSETS, 'assets/world-v2/valley.png', 'assets/world-v2/oak.png', getCharacter(heroId).image, ...AREAS.map((a) => getCharacter(a.villain).image), LANG_FX[language].image, 'assets/fx/impact.png', 'assets/cosmetics/hat_mage.png', 'assets/portraits/orwin.png']);
     audio.playMusic('journey');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -213,8 +213,8 @@ export function JourneyScreen() {
       if (!alive(i) && !died) return;
       const t = died ? Math.min(1, (now - died) / 700) : 0;
       if (t >= 1) return;
-      const hurt = bugHurt.current[i] && now - bugHurt.current[i] < 300;
-      drawBug(ctx, x + (hurt ? Math.round(Math.sin(now / 20) * 2) : 0), GROUND_Y + 2, now + i * 333, palette.bug, h.x < MINION_X[i] ? -1 : 1, t);
+      const hurt = bugHurt.current[i] && now - bugHurt.current[i] < 400;
+      drawBug(ctx, x + (hurt ? Math.round(Math.sin(now / 20) * 2) : 0), GROUND_Y + 2, now + i * 333, palette.bug, h.x < MINION_X[i] ? -1 : 1, t, areaIdx+i, hurt ? now-bugHurt.current[i] : -1);
       if (!died) drawPixelText(ctx, 'BUG', x, GROUND_Y - 46 + Math.round(Math.sin(now / 300) * 1), '#F3E9D2', { outline: '#0A0A0F', align: 'center' });
     });
 

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { SHOTS, seedSave } from './helpers';
 test('world v2: north architecture loads and village remains responsive',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
- await seedSave(page,{heroClass:'alchemist',extra:{village:{x:10,y:4,facing:'up'}}});
+ await seedSave(page,{heroClass:'alchemist',extra:{village:{x:12,y:5,facing:'up'}}});
  await page.goto('/?rota=vila');
  await expect(page.locator('.village-hud')).toBeVisible();
  await page.waitForFunction(()=>performance.getEntriesByType('resource').some(e=>e.name.includes('world-v2/gate.png')));

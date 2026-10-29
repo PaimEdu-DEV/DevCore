@@ -1,0 +1,48 @@
+DEVCORE — CONTINUAR REFORMULACAO ESPACIAL (29/10/2026)
+
+Pedido: vila organica com setores claros, caminhos estreitos, praca habitada e todos os NPCs acessiveis. Trocar bugs pelas tres folhas em Downloads. Usuario pediu interromper por limite e subir o estado atual.
+
+IMPLEMENTADO NESTA ETAPA
+- layout.ts concentra edificios, rotas, praca, decoracoes e grupos de arvores.
+- Mapa ampliado de 20x15 para 24x20 tiles de 24px. Residencias agrupadas a oeste, oficina a leste, mercado a sudeste da praca, portao ao norte.
+- map.ts constroi colisoes a partir das mesmas fundacoes/decoracoes usadas no desenho. NPCs reposicionados; SPAWN=(12,14). Saves em tiles bloqueados ja sao recolocados pelo efeito existente.
+- terrain.ts desenha caminhos por distancia a polilinhas, largura de 16-30px, terra com pedras esparsas, transicoes irregulares e praca oval de calcamento. Mantem lago com margem de pedras.
+- props.ts acrescenta bancos, barris, carroca, banca de mercado, flores/canteiros e pedras. Objetos grandes possuem dois tiles de colisao.
+- VillageScreen ordena decoracao, casas, NPCs e arvores por profundidade e adiciona sombras dos personagens. Reutiliza assets world-v2.
+- Tres folhas de Downloads copiadas em art/enemies-v3: hooded, necromancer, glitch. Originais preservados.
+- Encapuzado tinha fundo preto RGB opaco: imagegen removeu fundo em hooded-alpha.png. Conferido visualmente, mas revisao minuciosa de TODOS os frames ainda recomendada.
+- prepare-enemies-v3.mjs prepara folhas runtime 256x260 com 4 colunas x 5 linhas, frames 64x52. Reproduzir com node scripts/prepare-enemies-v3.mjs a partir de devcore/.
+- Journey usa variantes por area+indice, idle em quatro frames, ataque ao errar desafio e morte em quatro frames. Movimento/IA e desafios intactos. Folhas tem linhas de caminhada/reacao disponiveis mas nao usadas pois os encontros sao estaticos.
+
+VALIDACAO EFETUADA
+- npm.cmd run build passou.
+- npm.cmd test: 127 testes passaram, incluindo map.test.ts que verifica acesso adjacente a TODOS os NPCs/props interativos e colisoes dos edificios/decoracoes.
+- Captura real da praca revisada: caminhos mais estreitos e praca delimitada. Captura real da jornada revisada: Encapuzado transparente, orientado ao jogador e com pes alinhados.
+- Teste antigo village falhou inicialmente por clicar em coordenadas ANTIGAS do Garrick, nao por falha comprovada de navegacao. Atualizado para novo Garrick (19,8); helper agora inicia em (12,12).
+- Rodada seguinte executada: journey combate ate Aldric, outras areas e mobile passaram. Conferir resultado final dos testes village e world-v2 no log/ultima execucao.
+- Novo e2e/composition.spec.ts AINDA NAO EXECUTADO: captura praca, residencia, oficina, mercado e portao; tenta andar contra fundacao e verifica save apos navegar a Perfil.
+
+PROXIMOS PASSOS (NAO CONSIDERAR TERMINADO)
+1. Trabalhar no cwd devcore/ ao rodar npm/node scripts; raiz do repositorio fica um nivel acima.
+2. Rodar node node_modules/@playwright/test/cli.js test e2e/composition.spec.ts e2e/village.spec.ts e2e/world-v2.spec.ts.
+3. Inspecionar test-results/shots/v3-*.png. Ajustar composicao com base no jogo real, especialmente ocupacao do mercado, posicao das casas e leitura das bordas. Nao adicionar objetos so para preencher.
+4. Revisar se copas/edificios escondem atores indevidamente; sombras e bases devem acompanhar os pes. Testar cliques/toque e teclado.
+5. Verificar frames de ataque/morte das tres folhas: fontes tem grid aproximado, efeitos podem tocar limites das celulas. Padding evita vazamento entre frames runtime, mas cortes da fonte devem ser revisados. Nao remover preto dos contornos indiscriminadamente.
+6. Rodar build, testes e jornada apos correcoes. Atualizar VISUAL_RECONSTRUCTION.md (ainda descreve v2 e esta desatualizado em relacao ao novo layout e inimigos).
+7. Atualizar comentario antigo das coordenadas no e2e/village.spec.ts.
+8. Commit/push finais e conferir deploy Vercel se houver acesso. Push nao significa deploy confirmado.
+
+ESTRUTURA E REGRAS
+- Render Canvas PixelStage 448x252, nearest neighbor; camera de vila independente da jornada lateral.
+- Vila: heroi/NPCs escala 0.75. Casas nativas 120px. Footprints agora h=2 tiles; telhados sao sobreposicao visual.
+- Nao mudar recompensas, solucoes educacionais, saude ou dano.
+- Branch main, origin https://github.com/PaimEdu-DEV/DevCore.git.
+- Escrita em .git exige escalacao nesta sessao. Usuario autorizou push.
+- Screenshot de referencia da etapa atual: test-results/shots/30-village.png (ha resultados tanto na raiz quanto em devcore; preferir devcore para novas execucoes).
+- Fontes em Downloads: Folha de Sprites do Zumbi Encapuzado.png; Folha de sprites de zumbi necromante.png; Folha de Sprites do Zumbi Glitch.png.
+
+PROMPT DA UNICA EDICAO IMAGEGEN DESTA ETAPA
+Background extraction only. Remove the black background from this exact 4 columns by 5 rows zombie spritesheet, making it truly transparent. Preserve all twenty sprites, every pose, colors, internal dark outlines, scale, grid positions and exact image proportions. Do not redraw or redesign the character, do not rearrange, crop or add sprites. Transparent spaces between all sprites; no labels, no checkerboard painted background. Keep the 4x5 sprite sheet layout identical.
+Resultado salvo em art/enemies-v3/hooded-alpha.png. Metodo built-in imagegen.
+
+ATUALIZACAO FINAL: a rodada de 5 testes de navegador terminou com TODOS PASSANDO (journey x3, village, world-v2). Apenas composition.spec.ts permanece sem execucao.

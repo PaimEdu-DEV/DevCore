@@ -16,7 +16,7 @@ test('vila: andar, conversar, loja, menu e portão', async ({ page }) => {
   await page.screenshot({ path: `${SHOTS}/30-village.png` });
 
   // clicar no Garrick (tile 6,9) a partir do ponto inicial (10,12): câmera em x=28, y=108.
-  await clickVirtual(page, 6 * 24 + 12 - 28, 9 * 24 + 6 - 108);
+  await clickVirtual(page, 19 * 24 + 12 - 76, 8 * 24 + 6 - 160);
   await expect(page.locator('.dialog-name')).toHaveText('Garrick', { timeout: 15_000 });
   await page.screenshot({ path: `${SHOTS}/33-village-garrick.png` });
   await page.getByRole('option', { name: 'Ver a loja' }).click();

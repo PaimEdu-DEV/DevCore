@@ -21,7 +21,7 @@ export async function seedSave(page: Page, opts: { heroClass: 'alchemist' | 'mag
       titles: [],
       daily: { lastWelcomeBonus: null, completed: {} },
       missionsClaimed: [],
-      village: { x: 10, y: 12, facing: 'right' },
+      village: { x: 12, y: 12, facing: 'right' },
       ...o.extra,
     };
     localStorage.setItem('devcore.save', JSON.stringify(save));

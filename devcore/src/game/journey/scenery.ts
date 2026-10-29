@@ -400,17 +400,15 @@ function mix(a: string, b: string, t: number): string {
  * Desenha um bug (inseto glitchado) com os pés em (x, feetY).
  * `look` é -1 (olhando para a esquerda) ou 1. `dying` vai de 0 a 1.
  */
-export function drawBug(ctx: CanvasRenderingContext2D, x: number, feetY: number, now: number, colors: [string, string, string], look: -1 | 1, dying = 0): void {
-  void colors;
-  const img=getImage('assets/world-v2/zombie.png'); if(!img)return;
-  ctx.save();ctx.translate(Math.round(x),Math.round(feetY));
-  ctx.fillStyle='#283327';ctx.fillRect(-10,-1,23,2);
-  ctx.scale(-look,1);ctx.globalAlpha=1-dying;
-  const collapse=Math.round(dying*24);
-  const sway=Math.floor(now/480)%2;
-  // Feet remain fixed; torso sway is a one-pixel crop translation.
-  const legs=12,upper=img.height-legs;
-  ctx.drawImage(img,0,0,img.width,upper,-Math.floor(img.width/2)+sway,-img.height+collapse,img.width,upper);
-  ctx.drawImage(img,0,upper,img.width,legs,-Math.floor(img.width/2),-legs,img.width,legs);
-  ctx.restore();
+export const ENEMY_ASSETS = ['hooded','necromancer','glitch'].map(n=>'assets/enemies-v3/'+n+'.png');
+/** 4 columns, 5 rows: idle, walk, attack, hurt, death; 64x52 padded frames. */
+export function drawBug(ctx: CanvasRenderingContext2D,x:number,feetY:number,now:number,colors:[string,string,string],look:-1|1,dying=0,variant=0,attackElapsed=-1):void {
+ void colors;
+ const img=getImage(ENEMY_ASSETS[variant%ENEMY_ASSETS.length]);if(!img)return;
+ const row=dying>0?4:attackElapsed>=0?2:0;
+ const frame=dying>0?Math.min(3,Math.floor(dying*4)):attackElapsed>=0?Math.min(3,Math.floor(attackElapsed/100)):Math.floor(now/220)%4;
+ ctx.save();ctx.translate(Math.round(x),Math.round(feetY));
+ ctx.fillStyle='rgba(12,22,15,.35)';ctx.fillRect(-9,-1,20,2);
+ ctx.scale(look,1);ctx.globalAlpha=dying>.8?(1-dying)*5:1;
+ ctx.drawImage(img,frame*64,row*52,64,52,-32,-49,64,52);ctx.restore();
 }
