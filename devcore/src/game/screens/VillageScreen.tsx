@@ -59,6 +59,8 @@ function buildStaticLayer(): HTMLCanvasElement | null {
   c.height = MAP_H * TILE;
   const ctx = c.getContext('2d')!;
   ctx.imageSmoothingEnabled=false;
+  const village=getImage('assets/world-v3/village.png');
+  if(village) { ctx.drawImage(village,0,72); return c; }
   drawTerrain(ctx);
   for (let y = 0; y < MAP_H; y++) {
     for (let x = 0; x < MAP_W; x++) {
@@ -105,7 +107,7 @@ export function VillageScreen() {
 
   useEffect(() => {
     const hero = save ? heroSpriteId(save.player.gender, save.player.heroClass) : 'hero_alchemist_m';
-    void preloadImages([...WORLD_ASSETS, tileset.image, getCharacter(hero).image, ...NPCS.map((n) => getCharacter(n.id).image), 'assets/cosmetics/hat_mage.png']).then(() => {
+    void preloadImages([...WORLD_ASSETS, 'assets/world-v3/village.png', tileset.image, getCharacter(hero).image, ...NPCS.map((n) => getCharacter(n.id).image), 'assets/cosmetics/hat_mage.png']).then(() => {
       staticLayer = buildStaticLayer();
     });
     if (!staticLayer) staticLayer = buildStaticLayer();
@@ -368,16 +370,16 @@ export function VillageScreen() {
           ),
       });
     }
-    for (const h of HOUSES) actors.push({y:h.y+h.h-1,draw:()=>drawHouse(ctx,h.x*TILE-camX,h.y*TILE-camY,h.w,h.kind==='forge')});
-    if(tiles) for(let y=0;y<MAP_H;y++) for(let x=0;x<MAP_W;x++) {
+    if(!getImage('assets/world-v3/village.png')) for (const h of HOUSES) actors.push({y:h.y+h.h-1,draw:()=>drawHouse(ctx,h.x*TILE-camX,h.y*TILE-camY,h.w,h.kind==='forge')});
+    if(!getImage('assets/world-v3/village.png') && tiles) for(let y=0;y<MAP_H;y++) for(let x=0;x<MAP_W;x++) {
       const name=tileAt(x,y).tile;
       if(!['tree','fence','well','lamp','sign','crate','bush'].includes(name)) continue;
       if(name==='tree'||DECOR.some(d=>d.x===x&&d.y===y)) continue;
       actors.push({y,draw:()=>drawProp(ctx,name,x*TILE-camX,y*TILE-camY,x,y)});
     }
-    for(const d of DECOR) actors.push({y:d.y,draw:()=>drawProp(ctx,d.kind,d.x*TILE-camX,d.y*TILE-camY,d.x,d.y)});
-    for(const t of TREES) actors.push({y:t.y,draw:()=>drawOak(ctx,t.x*TILE+12-camX,(t.y+1)*TILE-camY)});
-    actors.push({y:GATE.y,draw:()=>{const gate=getImage('assets/world-v2/gate.png');if(gate)ctx.drawImage(gate,(GATE.x+1)*TILE-gate.width/2-camX,(GATE.y+1)*TILE-gate.height-camY);}});
+    if(!getImage('assets/world-v3/village.png')) for(const d of DECOR) actors.push({y:d.y,draw:()=>drawProp(ctx,d.kind,d.x*TILE-camX,d.y*TILE-camY,d.x,d.y)});
+    if(!getImage('assets/world-v3/village.png')) for(const t of TREES) actors.push({y:t.y,draw:()=>drawOak(ctx,t.x*TILE+12-camX,(t.y+1)*TILE-camY)});
+    if(!getImage('assets/world-v3/village.png')) actors.push({y:GATE.y,draw:()=>{const gate=getImage('assets/world-v2/gate.png');if(gate)ctx.drawImage(gate,(GATE.x+1)*TILE-gate.width/2-camX,(GATE.y+1)*TILE-gate.height-camY);}});
     actors.sort((a, b) => a.y - b.y).forEach((a) => a.draw());
 
     // dica de interação
