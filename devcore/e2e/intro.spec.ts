@@ -7,9 +7,13 @@ test('título → abertura → criação de personagem → chegada', async ({ pa
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.waitForTimeout(400);
-  await page.screenshot({ path: `${SHOTS}/01-title.png` });
-  await page.keyboard.press('Enter');
   await expect(page.getByRole('button', { name: 'Novo Jogo' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Continuar' })).toBeDisabled();
+  await page.screenshot({ path: `${SHOTS}/01-title.png` });
+  // teclado: seta para baixo pula o Continuar (desabilitado) e vai para Configurações
+  await page.keyboard.press('ArrowDown');
+  await expect(page.locator('.title-hit.is-selected')).toHaveAttribute('aria-label', 'Configurações');
+  await page.keyboard.press('ArrowUp');
   await page.screenshot({ path: `${SHOTS}/02-menu.png` });
   await page.getByRole('button', { name: 'Novo Jogo' }).click();
 

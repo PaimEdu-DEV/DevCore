@@ -1,28 +1,27 @@
 import { useState } from 'react';
-import { assetUrl, getImage } from '../assets/sprites';
-import { PixelStage, VW } from '../engine/PixelStage';
-import { PixelMenu } from '../ui/PixelMenu';
-import { DialogBox } from '../ui/DialogBox';
-import { isConfirm, useKeys } from '../ui/hooks';
+import { assetUrl } from '../assets/sprites';
+import { isCancel, isConfirm, useKeys } from '../ui/hooks';
 import { game, useGame } from '../state/store';
 import { audio } from '../audio/AudioManager';
 import { deleteSave } from '../state/save';
 import './title.css';
 
-const STARS = Array.from({ length: 26 }, (_, i) => ({ x: (i * 97) % VW, y: (i * 53) % 110, p: i * 0.7 }));
+// Arte do menu (art/source/title-menu.png). Os botões já estão desenhados na imagem;
+// as áreas clicáveis abaixo ficam exatamente em cima deles, em % do tamanho da imagem.
+const ART = 'assets/ui/title-menu.webp';
+const BUTTONS = [
+  { id: 'new', label: 'Novo Jogo', top: 52.6 },
+  { id: 'continue', label: 'Continuar', top: 60.6 },
+  { id: 'options', label: 'Configurações', top: 68.6 },
+  { id: 'exit', label: 'Sair', top: 76.6 },
+] as const;
+type ButtonId = (typeof BUTTONS)[number]['id'];
 
 export function TitleScreen() {
   const save = useGame((s) => s.save);
-  const [stage, setStage] = useState<'press' | 'menu' | 'confirmNew'>('press');
-
-  useKeys((e, type) => {
-    if (type === 'down' && stage === 'press' && (isConfirm(e) || e.key.length === 1)) {
-      e.preventDefault();
-      audio.unlock();
-      audio.play('confirm');
-      setStage('menu');
-    }
-  }, stage === 'press');
+  const [stage, setStage] = useState<'menu' | 'confirmNew' | 'bye'>('menu');
+  const enabled = (id: ButtonId) => id !== 'continue' || !!save;
+  const [sel, setSel] = useState(save ? 1 : 0);
 
   const startNew = () => {
     deleteSave();
@@ -30,55 +29,111 @@ export function TitleScreen() {
     game.navigate({ name: 'cutscene', id: 'opening', next: { name: 'creation' } });
   };
 
-  const render = (ctx: CanvasRenderingContext2D, now: number) => {
-    const bg = getImage('assets/backgrounds/title.png');
-    if (bg) ctx.drawImage(bg, 0, 0);
-    for (const s of STARS) {
-      const a = 0.5 + 0.5 * Math.sin(now / 500 + s.p);
-      ctx.fillStyle = a > 0.8 ? '#FFE08A' : '#33456E';
-      ctx.fillRect(s.x, s.y, 1, 1);
+  const choose = (id: ButtonId) => {
+    if (!enabled(id)) return;
+    audio.unlock();
+    audio.play('confirm');
+    switch (id) {
+      case 'new':
+        if (save) setStage('confirmNew');
+        else startNew();
+        return;
+      case 'continue':
+        game.navigate({ name: 'village' });
+        return;
+      case 'options':
+        game.navigate({ name: 'options', back: { name: 'title' } });
+        return;
+      case 'exit':
+        if (document.fullscreenElement) void document.exitFullscreen().catch(() => undefined);
+        setStage('bye');
+        return;
     }
-    // pulso do Core no alto da torre
-    const pulse = 1 + Math.sin(now / 300);
-    ctx.fillStyle = '#9BFF1A';
-    ctx.globalAlpha = 0.25 + 0.15 * pulse;
-    ctx.fillRect(160 - 3 - pulse, 72 - 3 - pulse, 6 + pulse * 2, 6 + pulse * 2);
-    ctx.globalAlpha = 1;
   };
 
+  const move = (d: number) => {
+    let i = sel;
+    do i = (i + d + BUTTONS.length) % BUTTONS.length;
+    while (!enabled(BUTTONS[i].id));
+    setSel(i);
+    audio.play('blip');
+  };
+
+  useKeys((e, type) => {
+    if (type !== 'down') return;
+    if (stage === 'menu') {
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        move(1);
+      } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        e.preventDefault();
+        move(-1);
+      } else if (isConfirm(e) && !e.repeat && !(e.target instanceof HTMLButtonElement)) {
+        e.preventDefault();
+        choose(BUTTONS[sel].id);
+      }
+    } else if (isCancel(e)) {
+      e.preventDefault();
+      setStage('menu');
+    }
+  });
+
   return (
-    <PixelStage render={render}>
-      <img className="title-logo px" src={assetUrl('assets/ui/logo.png')} alt="DevCore" />
-      <p className="title-sub">Um RPG onde o seu código é a sua magia</p>
-      {stage === 'press' ? (
-        <button className="title-press" onClick={() => { audio.unlock(); setStage('menu'); }}>
-          Pressione Enter
-        </button>
-      ) : null}
-      {stage === 'menu' ? (
-        <div className="title-menu frame-panel thin">
-          <PixelMenu
-            ariaLabel="Menu principal"
-            items={[
-              { label: 'Novo Jogo', onSelect: () => (save ? setStage('confirmNew') : startNew()) },
-              { label: 'Continuar', disabled: !save, hint: save ? save.player.name : undefined, onSelect: () => game.navigate({ name: 'village' }) },
-              { label: 'Pergaminho', onSelect: () => game.navigate({ name: 'scroll', back: { name: 'title' } }) },
-              { label: 'Opções', onSelect: () => game.navigate({ name: 'options', back: { name: 'title' } }) },
-              { label: 'Créditos', onSelect: () => game.navigate({ name: 'credits' }) },
-            ]}
-          />
+    <main className="title-screen" style={{ ['--art' as string]: `url(${assetUrl(ART)})` }}>
+      <div className="title-art">
+        <img className="title-img" src={assetUrl(ART)} alt="DevCore — menu principal" draggable={false} />
+        <nav className="title-buttons" aria-label="Menu principal">
+          {BUTTONS.map((b, i) => (
+            <button
+              key={b.id}
+              className={`title-hit ${i === sel ? 'is-selected' : ''}`}
+              style={{ top: `${b.top}%` }}
+              disabled={!enabled(b.id)}
+              aria-label={b.label}
+              title={b.id === 'continue' && save ? `Continuar com ${save.player.name}` : undefined}
+              onPointerEnter={() => enabled(b.id) && i !== sel && (setSel(i), audio.play('blip'))}
+              onFocus={() => setSel(i)}
+              onClick={() => choose(b.id)}
+            />
+          ))}
+        </nav>
+        {save ? <span className="title-save">Jornada salva: {save.player.name}</span> : null}
+      </div>
+      <div className="title-links">
+        <button onClick={() => game.navigate({ name: 'scroll', back: { name: 'title' } })}>Pergaminho</button>
+        <span aria-hidden="true">·</span>
+        <button onClick={() => game.navigate({ name: 'credits' })}>Créditos</button>
+      </div>
+
+      {stage === 'confirmNew' ? (
+        <div className="title-modal" role="dialog" aria-label="Começar de novo?">
+          <div className="frame-panel thin title-modal-box">
+            <p>
+              Já existe uma jornada salva ({save?.player.name}). Começar de novo apaga esse progresso. Tem certeza?
+            </p>
+            <div className="row title-modal-actions">
+              <button className="btn primary" onClick={startNew} autoFocus>
+                Começar do zero
+              </button>
+              <button className="btn" onClick={() => setStage('menu')}>
+                Voltar
+              </button>
+            </div>
+          </div>
         </div>
       ) : null}
-      {stage === 'confirmNew' ? (
-        <DialogBox
-          speaker="Orwin"
-          portrait="assets/portraits/orwin.png"
-          text={`Já existe uma jornada salva (${save?.player.name}). Começar de novo apaga esse progresso. Tem certeza?`}
-          choices={[{ label: 'Começar do zero' }, { label: 'Voltar' }]}
-          onChoose={(i) => (i === 0 ? startNew() : setStage('menu'))}
-        />
+      {stage === 'bye' ? (
+        <div className="title-modal" role="dialog" aria-label="Até a próxima">
+          <div className="frame-panel thin title-modal-box">
+            <p>Até a próxima, herói! O Core estará esperando.</p>
+            <div className="row title-modal-actions">
+              <button className="btn primary" onClick={() => setStage('menu')} autoFocus>
+                Voltar ao menu
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
-      <p className="title-footer">v1.0 · Projeto de Engenharia de Software</p>
-    </PixelStage>
+    </main>
   );
 }

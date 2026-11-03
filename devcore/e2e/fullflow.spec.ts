@@ -11,8 +11,6 @@ test('fluxo completo: novo jogo → herói → lição → portão → Aldric', 
     localStorage.setItem('devcore.options', JSON.stringify({ textSpeed: 'instant', volume: 0, muted: true, editorFontSize: 15, reducedMotion: 'off' }));
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Pressione Enter' }).waitFor();
-  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Novo Jogo' }).click();
   await page.getByRole('button', { name: /Pular cena/ }).click();
 

@@ -14,6 +14,12 @@ O jogo vai rodar num estande de feira: quem passa precisa entender e jogar em po
 - **Câmera mais aberta.** A vila passou de 320x180 para 448x252 e a Jornada usa 448x252, com escala fracionária para ocupar a tela. Assim os personagens ficam menores e aparece mais cenário. As batalhas continuam em 320x180.
 - **Teclas de código.** Acima de todo editor há uma barra com os parâmetros da função, operadores, números, `true`/`false`, parênteses e apagar. No celular dá para resolver os desafios sem abrir o teclado do aparelho. Os botões ◀ ▶ de andar aparecem em telas de toque ou estreitas.
 
+## Menu principal
+
+- **A arte do menu é uma imagem única (`art/source/title-menu.png`, publicada como `public/assets/ui/title-menu.webp`) com os botões já desenhados.** Por cima de cada placa há um botão invisível, posicionado em % da imagem (`BUTTONS` em `TitleScreen.tsx`), com brilho dourado na seleção, setas/Enter no teclado e toque no celular. Se a arte mudar, é preciso remedir essas posições.
+- **"Configurações" abre as Opções; "Sair" sai da tela cheia e mostra uma despedida** (um site não pode fechar a própria aba). Pergaminho e Créditos ficaram como links discretos no canto.
+- **Sem a tela "Pressione Enter":** o menu aparece direto, mais rápido para o estande.
+
 ## Estrutura e deploy
 
 - **App em `devcore/`, `vercel.json` dentro de `devcore/`.** O projeto no Vercel foi criado com *Root Directory* = `devcore` (preset Vite, Node 24), então o build já roda dentro dessa pasta; o antigo `vercel.json` da raiz fazia `cd devcore` e quebrava todos os deploys. Agora o `devcore/vercel.json` instala, compila, publica `dist` e faz o rewrite de SPA.
