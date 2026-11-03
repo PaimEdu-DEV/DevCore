@@ -22,3 +22,21 @@ test('layout de celular: título, vila com D-pad e batalha', async ({ page }) =>
   await expect(page.locator('.hpbox-foe')).toBeVisible();
   await page.screenshot({ path: `${SHOTS}/62-mobile-battle.png`, fullPage: true });
 });
+
+test('celular em pé pede para girar; deitado joga direto', async ({ browser }) => {
+  const portrait = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  const p = await portrait.newPage();
+  await p.goto('/');
+  await expect(p.getByRole('dialog', { name: 'Gire o celular' })).toBeVisible();
+  await p.screenshot({ path: `${SHOTS}/63-mobile-rotate.png` });
+  await p.getByRole('button', { name: 'Jogar em pé mesmo' }).click();
+  await expect(p.getByRole('dialog', { name: 'Gire o celular' })).toBeHidden();
+  await portrait.close();
+
+  const landscape = await browser.newContext({ viewport: { width: 844, height: 390 }, hasTouch: true, isMobile: true });
+  const l = await landscape.newPage();
+  await l.goto('/');
+  await l.waitForTimeout(300);
+  await expect(l.getByRole('dialog', { name: 'Gire o celular' })).toHaveCount(0);
+  await landscape.close();
+});

@@ -14,6 +14,7 @@ import { BossSelectScreen } from './game/screens/BossSelectScreen';
 import { dailyChallenge, todayKey } from './game/data/challenges';
 import { assetUrl } from './game/assets/sprites';
 import { audio } from './game/audio/AudioManager';
+import { OrientationGuard } from './game/ui/Orientation';
 
 // Telas com editor de código (CodeMirror) são carregadas sob demanda.
 const LessonScreen = lazy(() => import('./game/screens/LessonScreen').then((m) => ({ default: m.LessonScreen })));
@@ -124,6 +125,7 @@ export function App() {
     <>
       <Suspense fallback={<Loading />}>{screen}</Suspense>
       <Toasts />
+      <OrientationGuard />
     </>
   );
 }

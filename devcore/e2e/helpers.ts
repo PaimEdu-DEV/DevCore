@@ -6,6 +6,8 @@ export const SHOTS = process.env.SHOTS_DIR ?? 'test-results/shots';
 /** Cria um save pronto no localStorage antes de abrir a página. */
 export async function seedSave(page: Page, opts: { heroClass: 'alchemist' | 'mage'; gender?: 'm' | 'f'; name?: string; extra?: Record<string, unknown> }) {
   await page.addInitScript((o) => {
+    // testes em celular de pé: dispensa o aviso de girar a tela
+    sessionStorage.setItem('devcore.portraitOk', '1');
     if (sessionStorage.getItem('seeded')) return;
     sessionStorage.setItem('seeded', '1');
     const now = new Date().toISOString();
