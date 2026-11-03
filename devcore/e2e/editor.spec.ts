@@ -51,3 +51,16 @@ test('laço infinito em JavaScript é interrompido', async ({ page }) => {
   await page.keyboard.press('Control+Enter');
   await expect(page.getByRole('tab', { name: /Testes/ })).toContainText('5/5');
 });
+
+test('Tab aceita o autocompletar e os atalhos de toque montam o código', async ({ page }) => {
+  await seedSave(page, { heroClass: 'mage' });
+  await page.goto('/?licao=aldric-l1');
+  await setCode(page, 'function f() {\n  ret');
+  await expect(page.locator('.cm-tooltip-autocomplete')).toBeVisible();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('.cm-content')).toContainText('return');
+  // atalhos: nova linha e o trecho "if" sem usar o teclado
+  await page.getByRole('button', { name: 'Nova linha' }).click();
+  await page.locator('.code-token.kw', { hasText: /^if$/ }).click();
+  await expect(page.locator('.cm-content')).toContainText('if () {');
+});

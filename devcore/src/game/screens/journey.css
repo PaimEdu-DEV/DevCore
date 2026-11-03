@@ -137,7 +137,8 @@
   }
 }
 
-@media (max-width: 900px) {
+/* Celular em pé: cenário em cima, código embaixo. Deitado, o painel fica por cima do cenário, à direita. */
+@media (max-width: 900px) and (orientation: portrait) {
   .journey {
     flex-direction: column;
   }
@@ -153,5 +154,28 @@
     border: 0;
     border-top: 3px solid var(--gold);
     box-shadow: none;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .journey-fight {
+    top: 6px;
+    right: 6px;
+    bottom: 6px;
+    width: min(520px, 58vw);
+  }
+
+  .journey-fight .qf {
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .journey-fight .qf-statement {
+    font-size: 14px;
+  }
+
+  .journey-fight .qf-editor,
+  .journey-fight .qf-editor .cm-editor {
+    min-height: 110px;
   }
 }

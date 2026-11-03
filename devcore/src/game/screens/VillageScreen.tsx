@@ -5,7 +5,7 @@ import { HOUSES, isHouseTile, drawHouse, drawOak, WORLD_ASSETS } from '../villag
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getImage, preloadImages, getCharacter, assetUrl, heroSpriteId } from '../assets/sprites';
 import { drawCharacter, drawHero } from '../engine/draw';
-import { PixelStage } from '../engine/PixelStage';
+import { PixelStage, type View } from '../engine/PixelStage';
 import { DialogBox } from '../ui/DialogBox';
 import { PixelMenu } from '../ui/PixelMenu';
 import { isCancel, isConfirm, typingInField, useKeys } from '../ui/hooks';
@@ -22,8 +22,9 @@ import './village.css';
 
 const STEP_MS = 170;
 // Câmera mais aberta que a das batalhas: mostra mais da vila e deixa os personagens menores na tela.
-const VW = 448;
+// A altura é fixa; a largura se adapta à tela (estreita no celular em pé, até o mapa inteiro deitado).
 const VH = 252;
+const FILL = { minWidth: 200, maxWidth: 576 };
 const COLS = tileset.columns;
 
 type Dir = 'up' | 'down' | 'left' | 'right';
@@ -299,7 +300,11 @@ export function VillageScreen() {
 
   const lastHint = useRef<string | null>(null);
 
-  const render = (ctx: CanvasRenderingContext2D, now: number) => {
+  const viewW = useRef(448);
+
+  const render = (ctx: CanvasRenderingContext2D, now: number, _dt: number, view: View) => {
+    const VW = view.w;
+    viewW.current = VW;
     const p = player.current;
     // tile atual no DOM (os testes automáticos andam pela vila lendo isto)
     const tile = `${p.x},${p.y}`;
@@ -404,13 +409,14 @@ export function VillageScreen() {
   };
 
   const onStageClick = (vx: number, vy: number) => {
+    const VW = viewW.current;
     if (busyRef.current) return;
     audio.unlock();
     const p = player.current;
     const px = p.x * TILE + TILE / 2;
     const py = p.y * TILE + TILE - 2;
     const camX = Math.max(0, Math.min(MAP_W * TILE - VW, px - VW / 2));
-    const camY = Math.max(-72, Math.min(MAP_H * TILE - VH, py - 24 - VH / 2));
+    const camY = Math.max(0, Math.min(MAP_H * TILE - VH, py - 24 - VH / 2));
     const wx = vx + camX;
     const wy = vy + camY;
     // clique num NPC (área do corpo, acima do tile)
@@ -471,7 +477,7 @@ export function VillageScreen() {
 
   return (
     <main ref={mainRef} className="screen village" style={{ background: 'var(--black)' }}>
-      <PixelStage render={render} onPointerDown={onStageClick} width={VW} height={VH} fractional>
+      <PixelStage render={render} onPointerDown={onStageClick} height={VH} fill={FILL}>
         <div className="village-hud">
           <span className="village-name">{save.player.name}</span>
           <span>Nv {playerLevel(save)}</span>

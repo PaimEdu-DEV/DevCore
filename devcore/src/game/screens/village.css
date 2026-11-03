@@ -142,9 +142,54 @@
     display: block;
   }
 
+  .dpad button {
+    width: 62px;
+    height: 62px;
+  }
+
+  .dpad-up {
+    left: 62px;
+  }
+
+  .dpad-down {
+    left: 62px;
+    top: 110px;
+  }
+
+  .dpad-left {
+    top: 55px;
+  }
+
+  .dpad-right {
+    left: 124px;
+    top: 55px;
+  }
+
+  .dpad {
+    height: 172px;
+  }
+
+  .dpad .dpad-a {
+    width: 84px;
+    height: 84px;
+    top: 44px;
+  }
+}
+
+/* Celular em pé: o cenário fica em cima e os controles embaixo. Deitado, os controles ficam por cima do cenário. */
+@media ((pointer: coarse) or (max-width: 760px)) and (orientation: portrait) {
   .village .pixel-stage-wrap {
     align-items: start;
     padding-top: 8px;
-    height: calc(100% - 170px);
+    height: calc(100% - 196px);
+  }
+}
+
+@media ((pointer: coarse) or (max-width: 760px)) and (orientation: landscape) {
+  .dpad {
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: 8px;
+    opacity: 0.85;
   }
 }

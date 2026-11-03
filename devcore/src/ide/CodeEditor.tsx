@@ -12,9 +12,9 @@ import {
   Decoration,
   type DecorationSet,
 } from '@codemirror/view';
-import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
+import { defaultKeymap, history, historyKeymap, indentWithTab, cursorCharLeft, cursorCharRight, cursorLineUp, cursorLineDown, insertNewlineAndIndent, indentMore } from '@codemirror/commands';
 import { indentOnInput, bracketMatching, indentUnit } from '@codemirror/language';
-import { closeBrackets, closeBracketsKeymap, autocompletion, completionKeymap, completeFromList, type Completion } from '@codemirror/autocomplete';
+import { closeBrackets, closeBracketsKeymap, autocompletion, completionKeymap, completeFromList, acceptCompletion, type Completion } from '@codemirror/autocomplete';
 import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 import { lintGutter, setDiagnostics } from '@codemirror/lint';
 import { python, pythonLanguage } from '@codemirror/lang-python';
@@ -27,9 +27,11 @@ export interface CodeEditorHandle {
   getDoc(): string;
   focus(): void;
   /** Insere texto no cursor sem focar o editor (não abre o teclado do celular). */
-  insert(text: string): void;
+  insert(text: string, caret?: number): void;
   /** Apaga o caractere antes do cursor (ou a seleção). */
   deleteBack(): void;
+  /** Comandos dos atalhos de toque: mover o cursor, nova linha com indentação, Tab. */
+  command(name: EditorCommand): void;
 }
 
 interface Props {
@@ -59,6 +61,16 @@ const JS_WORDS: Completion[] = [
   ...['Math.max', 'Math.min', 'Math.floor', 'Math.abs', 'Math.round', 'Number', 'String', 'Array.isArray', 'Number.isInteger', 'JSON.parse', 'JSON.stringify', 'parseInt'].map((label) => ({ label, type: 'function', apply: `${label}(` })),
   ...['.length', '.push(', '.map(', '.filter(', '.includes(', '.toLowerCase()', '.toUpperCase()', '.split(', '.join(', '.trim()'].map((label) => ({ label: label.replace(/^\./, '').replace(/\($/, '').replace(/\(\)$/, ''), type: 'method', apply: label.slice(1) })),
 ];
+
+export type EditorCommand = 'left' | 'right' | 'up' | 'down' | 'newline' | 'tab';
+const COMMANDS: Record<EditorCommand, (v: EditorView) => boolean> = {
+  left: cursorCharLeft,
+  right: cursorCharRight,
+  up: cursorLineUp,
+  down: cursorLineDown,
+  newline: insertNewlineAndIndent,
+  tab: indentMore,
+};
 
 const setErrorLine = StateEffect.define<number | null>();
 const errorLineField = StateField.define<DecorationSet>({
@@ -101,11 +113,11 @@ export function CodeEditor({ language, initialDoc, fontSize, error, onChange, on
     },
     getDoc: () => view.current?.state.doc.toString() ?? '',
     focus: () => view.current?.focus(),
-    insert(text: string) {
+    insert(text: string, caret = text.length) {
       const v = view.current;
       if (!v) return;
       const { from, to } = v.state.selection.main;
-      v.dispatch({ changes: { from, to, insert: text }, selection: { anchor: from + text.length }, scrollIntoView: true });
+      v.dispatch({ changes: { from, to, insert: text }, selection: { anchor: from + caret }, scrollIntoView: true });
     },
     deleteBack() {
       const v = view.current;
@@ -115,11 +127,17 @@ export function CodeEditor({ language, initialDoc, fontSize, error, onChange, on
       if (start === to) return;
       v.dispatch({ changes: { from: start, to }, selection: { anchor: start }, scrollIntoView: true });
     },
+    command(name: EditorCommand) {
+      const v = view.current;
+      if (v) COMMANDS[name](v);
+    },
   }));
 
   useEffect(() => {
     if (!host.current) return;
     const runKey = { key: 'Mod-Enter', preventDefault: true, run: () => (cb.current.onRun?.(), true) };
+    // Tab aceita a sugestão do autocompletar; sem sugestão aberta, continua indentando.
+    const tabAccept = { key: 'Tab', run: acceptCompletion };
     const state = EditorState.create({
       doc: initialDoc,
       extensions: [
@@ -133,12 +151,12 @@ export function CodeEditor({ language, initialDoc, fontSize, error, onChange, on
         indentOnInput(),
         bracketMatching(),
         closeBrackets(),
-        autocompletion({ activateOnTyping: true, icons: true }),
+        autocompletion({ activateOnTyping: true, icons: true, interactionDelay: 0 }),
         highlightActiveLine(),
         highlightSelectionMatches(),
         lintGutter(),
         errorLineField,
-        keymap.of([runKey, ...closeBracketsKeymap, ...defaultKeymap, ...searchKeymap, ...historyKeymap, ...completionKeymap, indentWithTab]),
+        keymap.of([runKey, tabAccept, ...closeBracketsKeymap, ...defaultKeymap, ...searchKeymap, ...historyKeymap, ...completionKeymap, indentWithTab]),
         ...languageExt(language),
         ...(wrap ? [EditorView.lineWrapping] : []),
         darkPlusTheme,

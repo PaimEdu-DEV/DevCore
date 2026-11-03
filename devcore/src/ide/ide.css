@@ -13,6 +13,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  min-width: 0;
   height: 100%;
   background: #1e1e1e;
   color: #cccccc;
@@ -428,11 +429,50 @@
 /* ---------- teclas de código (celular / estande) ---------- */
 .code-tokens {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  min-width: 0;
   gap: 4px;
   padding: 6px 8px;
   background: #252526;
   border-bottom: 1px solid #333;
+}
+
+.code-tokens-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.code-token.move {
+  background: #2d3b4f;
+  border-color: #3e5270;
+}
+
+.code-token.kw {
+  color: #c586c0;
+  font-weight: 600;
+}
+
+/* No celular, cada fileira vira uma faixa que rola para o lado (ocupa pouca altura). */
+@media (pointer: coarse), (max-width: 760px) {
+  .code-tokens-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .code-tokens-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .code-token {
+    flex: none;
+    min-width: 42px;
+    height: 40px;
+    font-size: 17px;
+  }
 }
 
 .code-token {
@@ -542,12 +582,45 @@
 }
 
 .qf-actions {
+  position: sticky;
+  bottom: 0;
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+  padding: 8px 0 2px;
+  background: linear-gradient(transparent, #161a22 30%);
 }
 
 .qf-run {
   font-size: 18px;
   padding: 10px 22px;
+}
+
+/* Toque: botões maiores e sem o atalho de teclado no rótulo. */
+@media (pointer: coarse), (max-width: 760px) {
+  .ide-btn {
+    min-height: 40px;
+    padding: 6px 12px;
+    font-size: 15px;
+  }
+
+  .ide-btn kbd {
+    display: none;
+  }
+
+  .ide-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .ide-actions {
+    flex: 1 1 0;
+    min-width: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  /* o botão principal sempre visível, primeiro da fila */
+  .ide-run {
+    order: -1;
+  }
 }

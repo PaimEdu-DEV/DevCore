@@ -42,9 +42,9 @@ export const MAP_ROWS = [
   '###########...##.#######', // 5
   '#...##.###......##..##.#', // 6  frente da casa dos livros e da forja
   '##......................', // 7  estrada principal
-  '#...........o....#......', // 8  praça e poço
+  '#..........#o#...#......', // 8  praça e poço
   '#########.##o#..########', // 9  telhado da taverna, canteiros, cerca do mercado
-  '#########.####..########', // 10
+  '#########..###..########', // 10
   '##########.....#########', // 11
   '#########......#########', // 12 banco e mercado (barracas e bonecos de treino)
   '############.....#######', // 13

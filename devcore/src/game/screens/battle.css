@@ -26,6 +26,7 @@
 
 .battle-right {
   min-height: 0;
+  min-width: 0;
   display: flex;
 }
 
@@ -273,7 +274,7 @@
   }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1000px) and (orientation: portrait) {
   .battle {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: max-content max-content;
@@ -289,5 +290,36 @@
 
   .battle-right {
     min-height: 560px;
+  }
+}
+
+/* Celular: a mecânica sai da frente e o editor sobe. */
+@media (max-width: 760px) {
+  .battle-mechanic {
+    display: none;
+  }
+
+  .battle-left {
+    gap: 6px;
+  }
+
+  .battle-right {
+    min-height: 70vh;
+  }
+}
+
+/* Celular deitado: cenário e enunciado à esquerda, editor à direita, sem rolar a página. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .battle {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .battle-mechanic {
+    display: none;
+  }
+
+  .battle-left {
+    gap: 6px;
   }
 }

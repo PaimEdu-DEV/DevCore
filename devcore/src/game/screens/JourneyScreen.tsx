@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PixelStage } from '../engine/PixelStage';
+import { PixelStage, type View } from '../engine/PixelStage';
 import { drawCharacter, drawHero } from '../engine/draw';
 import { Effects } from '../engine/effects';
 import { drawPixelText } from '../engine/pixelFont';
@@ -18,8 +18,9 @@ import { QuickFight } from '../../ide/QuickFight';
 import './journey.css';
 
 // Câmera aberta: personagens pequenos e muito cenário na tela.
-const VW = 448;
 const VH = 252;
+// Largura adaptável: no celular em pé a câmera fecha e os personagens crescem.
+const FILL = { minWidth: 260, maxWidth: 560 };
 const SPEED = 0.09; // px por ms
 const STOP_GAP = 34; // distância em que o herói para diante de um bug
 const BOSS_GAP = 64; // e diante do chefe (que é maior)
@@ -58,6 +59,7 @@ export function JourneyScreen() {
     e.density = rm ? 0.35 : 1;
     return e;
   }, [rm]);
+  const viewW = useRef(448);
   const modeRef = useRef(mode);
   modeRef.current = mode;
   const introRef = useRef(intro);
@@ -153,7 +155,9 @@ export function JourneyScreen() {
   const look = { gender: save.player.gender, heroClass: save.player.heroClass, hat: save.cosmetics.equipped.hat, aura: save.cosmetics.equipped.aura };
   const villain = villainInfo(area.villain);
 
-  const render = (ctx: CanvasRenderingContext2D, now: number, dt: number) => {
+  const render = (ctx: CanvasRenderingContext2D, now: number, dt: number, view: View) => {
+    const VW = view.w;
+    viewW.current = VW;
     fx.update(dt, now);
     const h = hero.current;
     // ---- movimento ----
@@ -248,6 +252,7 @@ export function JourneyScreen() {
   };
 
   const onStageClick = (vx: number) => {
+    const VW = viewW.current;
     if (mode !== 'walk' || intro) return;
     audio.unlock();
     const camX = Math.max(0, Math.min(AREA_W - VW, hero.current.x - VW * 0.35));
@@ -276,7 +281,7 @@ export function JourneyScreen() {
   return (
     <main className={`screen journey ${mode === 'fight' ? 'is-fighting' : ''}`}>
       <div className="journey-stage">
-        <PixelStage render={render} onPointerDown={onStageClick} width={VW} height={VH} fractional>
+        <PixelStage render={render} onPointerDown={onStageClick} height={VH} fill={FILL}>
           <div className="journey-hud">
             <span className="journey-area">
               Área {Math.min(areaIdx + 1, AREAS.length)}/{AREAS.length} · {finished ? 'Core salvo!' : area.name}

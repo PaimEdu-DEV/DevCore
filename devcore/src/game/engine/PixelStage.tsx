@@ -3,10 +3,16 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 export const VW = 320;
 export const VH = 180;
 
-export type RenderFn = (ctx: CanvasRenderingContext2D, now: number, dt: number) => void;
+/** Tamanho atual da resolução virtual (muda com a tela quando o palco usa `fill`). */
+export interface View {
+  w: number;
+  h: number;
+}
+
+export type RenderFn = (ctx: CanvasRenderingContext2D, now: number, dt: number, view: View) => void;
 
 interface Props {
-  /** Chamado a cada quadro com o contexto na resolução virtual 320x180. */
+  /** Chamado a cada quadro com o contexto na resolução virtual (320x180 por padrão). */
   render: RenderFn;
   /** Elementos DOM sobrepostos, posicionados em px virtuais via var(--px). */
   children?: ReactNode;
@@ -19,19 +25,30 @@ interface Props {
   height?: number;
   /** Permite escala fracionária para ocupar a tela inteira (câmeras mais abertas). */
   fractional?: boolean;
+  /**
+   * Câmera que se adapta à tela: a altura virtual é fixa (`height`) e a largura varia
+   * entre `minWidth` e `maxWidth` para encher o espaço. No celular em pé a câmera fica
+   * estreita e os personagens grandes; deitado ou no PC, ela abre para os lados.
+   */
+  fill?: { minWidth: number; maxWidth: number };
 }
 
 /**
- * Palco de pixel art: canvas 320x180 escalado em múltiplos inteiros, com
- * image-rendering: pixelated, e uma camada DOM do mesmo tamanho por cima.
+ * Palco de pixel art: canvas em resolução virtual escalado com image-rendering: pixelated,
+ * e uma camada DOM do mesmo tamanho por cima.
  */
-export function PixelStage({ render, children, className, maxScale, onPointerDown, width = VW, height = VH, fractional }: Props) {
+export function PixelStage({ render, children, className, maxScale, onPointerDown, width = VW, height = VH, fractional, fill }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const renderRef = useRef(render);
   renderRef.current = render;
   // Começa pequeno: um palco grande demais pode alargar o contêiner antes da primeira medição.
   const [scale, setScale] = useState(1);
+  const [viewW, setViewW] = useState(width);
+  const viewRef = useRef<View>({ w: width, h: height });
+  viewRef.current = { w: fill ? viewW : width, h: height };
+  const minW = fill?.minWidth;
+  const maxW = fill?.maxWidth;
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -39,6 +56,20 @@ export function PixelStage({ render, children, className, maxScale, onPointerDow
     const ro = new ResizeObserver(() => {
       const w = wrap.clientWidth;
       const h = wrap.clientHeight;
+      if (minW !== undefined && maxW !== undefined) {
+        let s = h / height;
+        let vw = w / s;
+        if (vw < minW) {
+          vw = minW;
+          s = w / minW;
+        } else if (vw > maxW) {
+          vw = maxW;
+          s = Math.min(h / height, w / maxW);
+        }
+        setViewW(Math.round(vw));
+        setScale(Math.max(0.5, s));
+        return;
+      }
       const fit = Math.min(w / width, h / height);
       let s = fractional ? fit : Math.floor(fit);
       if (s < 1) s = fit;
@@ -47,7 +78,7 @@ export function PixelStage({ render, children, className, maxScale, onPointerDow
     });
     ro.observe(wrap);
     return () => ro.disconnect();
-  }, [maxScale, width, height, fractional]);
+  }, [maxScale, width, height, fractional, minW, maxW]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -63,25 +94,26 @@ export function PixelStage({ render, children, className, maxScale, onPointerDow
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.globalAlpha = 1;
       ctx.imageSmoothingEnabled = false;
-      renderRef.current(ctx, now, dt);
+      renderRef.current(ctx, now, dt, viewRef.current);
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  const vw = viewRef.current.w;
   return (
     <div ref={wrapRef} className={`pixel-stage-wrap ${className ?? ''}`}>
       <div
         className="pixel-stage"
-        style={{ width: Math.floor(width * scale), height: Math.floor(height * scale), ['--px' as string]: `${scale}px` }}
+        style={{ width: Math.floor(vw * scale), height: Math.floor(height * scale), ['--px' as string]: `${scale}px` }}
         onPointerDown={(e) => {
           if (!onPointerDown) return;
           const rect = e.currentTarget.getBoundingClientRect();
-          onPointerDown(((e.clientX - rect.left) / rect.width) * width, ((e.clientY - rect.top) / rect.height) * height);
+          onPointerDown(((e.clientX - rect.left) / rect.width) * vw, ((e.clientY - rect.top) / rect.height) * height);
         }}
       >
-        <canvas ref={canvasRef} width={width} height={height} className="pixel-canvas" />
+        <canvas ref={canvasRef} width={vw} height={height} className="pixel-canvas" />
         <div className="pixel-overlay">{children}</div>
       </div>
     </div>
