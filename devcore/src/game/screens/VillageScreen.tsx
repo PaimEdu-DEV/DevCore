@@ -60,7 +60,7 @@ function buildStaticLayer(): HTMLCanvasElement | null {
   const ctx = c.getContext('2d')!;
   ctx.imageSmoothingEnabled=false;
   const village=getImage('assets/world-v3/village.png');
-  if(village) { ctx.drawImage(village,0,72); return c; }
+  if(village) { ctx.drawImage(village,0,0,MAP_W*TILE,MAP_H*TILE); return c; }
   drawTerrain(ctx);
   for (let y = 0; y < MAP_H; y++) {
     for (let x = 0; x < MAP_W; x++) {
@@ -79,6 +79,7 @@ export function VillageScreen() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [hint, setHint] = useState<string | null>(null);
   const held = useRef<Dir[]>([]);
+  const mainRef = useRef<HTMLElement>(null);
   const busy = talk !== null || menuOpen;
   const busyRef = useRef(busy);
   busyRef.current = busy;
@@ -300,6 +301,9 @@ export function VillageScreen() {
 
   const render = (ctx: CanvasRenderingContext2D, now: number) => {
     const p = player.current;
+    // tile atual no DOM (os testes automáticos andam pela vila lendo isto)
+    const tile = `${p.x},${p.y}`;
+    if (mainRef.current && mainRef.current.dataset.tile !== tile) mainRef.current.dataset.tile = tile;
     // ---- movimento ----
     if (p.moving && now - p.t0 >= STEP_MS) {
       p.moving = false;
@@ -328,7 +332,7 @@ export function VillageScreen() {
 
     // ---- câmera ----
     const camX = Math.round(Math.max(0, Math.min(MAP_W * TILE - VW, px - VW / 2)));
-    const camY = Math.round(Math.max(-72, Math.min(MAP_H * TILE - VH, py - 24 - VH / 2)));
+    const camY = Math.round(Math.max(0, Math.min(MAP_H * TILE - VH, py - 24 - VH / 2)));
 
     ctx.fillStyle = '#354537';
     ctx.fillRect(0, 0, VW, VH);
@@ -466,7 +470,7 @@ export function VillageScreen() {
   };
 
   return (
-    <main className="screen village" style={{ background: 'var(--black)' }}>
+    <main ref={mainRef} className="screen village" style={{ background: 'var(--black)' }}>
       <PixelStage render={render} onPointerDown={onStageClick} width={VW} height={VH} fractional>
         <div className="village-hud">
           <span className="village-name">{save.player.name}</span>

@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { SHOTS, seedSave } from './helpers';
+import { SHOTS, seedSave, walkTo, face } from './helpers';
 
 /** Clica numa coordenada virtual (448x252) do palco da vila. */
 async function clickVirtual(page: Page, vx: number, vy: number) {
@@ -15,8 +15,17 @@ test('vila: andar, conversar, loja, menu e portão', async ({ page }) => {
   await page.waitForTimeout(600);
   await page.screenshot({ path: `${SHOTS}/30-village.png` });
 
-  // clicar no Garrick (tile 6,9) a partir do ponto inicial (10,12): câmera em x=28, y=108.
-  await clickVirtual(page, 19 * 24 + 12 - 76, 8 * 24 + 6 - 160);
+  // tocar na Isolde (3,15) a partir do início (12,12): o herói contorna a taverna e abre a conversa.
+  // Câmera com o herói em (12,12): x=76, y=156.
+  await clickVirtual(page, 3 * 24 + 12 - 76, 15 * 24 + 10 - 156);
+  await expect(page.locator('.dialog-name')).toHaveText('Isolde', { timeout: 15_000 });
+
+  // recarrega (o herói volta ao início) e anda até a forja pelo teclado para falar com o Garrick (22,6)
+  await page.goto('/?rota=vila');
+  await expect(page.locator('.village-hud')).toBeVisible();
+  await walkTo(page, 22, 7);
+  await face(page, 'ArrowUp');
+  await page.keyboard.press('Enter');
   await expect(page.locator('.dialog-name')).toHaveText('Garrick', { timeout: 15_000 });
   await page.screenshot({ path: `${SHOTS}/33-village-garrick.png` });
   await page.getByRole('option', { name: 'Ver a loja' }).click();

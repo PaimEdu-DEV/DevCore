@@ -1,4 +1,3 @@
-import { BUILDINGS, DECOR, TREES, GATE } from './layout';
 import tileset from '../assets/tileset.json';
 import type { NpcId } from '../data/characters';
 
@@ -30,17 +29,29 @@ const LEGEND: Record<string, { tile: string; solid: boolean }> = {
   l: { tile: 'lamp', solid: true },
 };
 
-// Vila do Portão (20x15). O portão do reino fica no alto, ao centro.
-// Solid terrain follows actual foundations, never roof silhouettes.
-const grid: string[][] = Array.from({length:20},(_,y)=>Array.from({length:24},(_,x)=>x===0||y===0||x===23||y===19?'b':'.'));
-for(const h of BUILDINGS)for(let y=h.y;y<h.y+h.h;y++)for(let x=h.x;x<h.x+h.w;x++)grid[y][x]='W';
-for(const d of DECOR)grid[d.y][d.x]='c';
-for(const t of TREES)grid[t.y][t.x]='T';
-for(let x=9;x<=15;x++)grid[GATE.y][x]=x===12||x===13?'G':'S';
-for(let y=15;y<=17;y++)for(let x=2;x<=5;x++)grid[y][x]='~';
-for(const [x,y,ch] of [[12,10,'o'],[10,5,'l'],[14,5,'l'],[15,14,'s'],[9,10,'l'],[15,11,'l']] as const)grid[y][x]=ch;
-grid[19][12]='.';
-export const MAP_ROWS=grid.map(row=>row.join(''));
+// Vila do Portão: colisão traçada sobre o panorama (public/assets/world-v3/village.png,
+// 576x408 = 24x17 tiles de 24px). # = sólido (casas, telhados, árvores, cercas, lampiões,
+// penhascos), . = chão livre, G = portão do reino, o = poço.
+// Ao trocar a imagem, refaça este desenho tile por tile sobre ela.
+export const MAP_ROWS = [
+  '########################', // 0  muralha, árvores e telhados
+  '############GG##########', // 1  portão
+  '############GG##########', // 2  escadaria do portão
+  '##########.....#...#####', // 3  frente do portão
+  '##########.....#..######', // 4
+  '###########...##.#######', // 5
+  '#...##.###......##..##.#', // 6  frente da casa dos livros e da forja
+  '##......................', // 7  estrada principal
+  '#...........o....#......', // 8  praça e poço
+  '#########.##o#..########', // 9  telhado da taverna, canteiros, cerca do mercado
+  '#########.####..########', // 10
+  '##########.....#########', // 11
+  '#########......#########', // 12 banco e mercado (barracas e bonecos de treino)
+  '############.....#######', // 13
+  '#########........#######', // 14 caminho de baixo
+  '##............##########', // 15 frente da taverna, ponte
+  '##..########..##########', // 16 trilha e ponte saindo do mapa
+];
 
 export const MAP_W = MAP_ROWS[0].length;
 export const MAP_H = MAP_ROWS.length;
@@ -64,9 +75,12 @@ export interface NpcPlacement {
 }
 
 export const NPCS: NpcPlacement[] = [
- {id:'orwin',x:11,y:5}, {id:'isolde',x:7,y:10,flip:true},
- {id:'garrick',x:19,y:8}, {id:'maren',x:17,y:12,flip:true},
- {id:'torvan',x:14,y:9}, {id:'elowen',x:8,y:15,flip:true},
+  { id: 'orwin', x: 3, y: 6 }, // casa dos livros
+  { id: 'isolde', x: 3, y: 15, flip: true }, // porta da taverna
+  { id: 'garrick', x: 22, y: 6, flip: true }, // forja
+  { id: 'maren', x: 15, y: 13 }, // ao lado do banco, perto do mercado
+  { id: 'torvan', x: 15, y: 6 }, // perto do portão
+  { id: 'elowen', x: 11, y: 15 }, // perto da ponte
 ];
 
 /** Objetos com que dá para interagir (além dos NPCs). */
@@ -80,7 +94,7 @@ export function propAt(x: number, y: number): PropId | null {
   return null;
 }
 
-export const SPAWN = { x: 12, y: 14 };
+export const SPAWN = { x: 12, y: 12 };
 
 export function isBlocked(x: number, y: number, extra: { x: number; y: number }[] = []): boolean {
   if (x < 0 || y < 0 || x >= MAP_W || y >= MAP_H) return true;

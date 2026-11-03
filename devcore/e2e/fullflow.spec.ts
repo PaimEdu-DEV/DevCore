@@ -1,15 +1,6 @@
-import { test, expect, type Page } from '@playwright/test';
-import { SHOTS, setCode } from './helpers';
+import { test, expect } from '@playwright/test';
+import { SHOTS, setCode, walkTo, face } from './helpers';
 import { SOLUTIONS } from '../src/game/data/challenges/solutions';
-
-async function step(page: Page, key: string, times = 1) {
-  for (let i = 0; i < times; i++) {
-    await page.keyboard.down(key);
-    await page.waitForTimeout(175);
-    await page.keyboard.up(key);
-    await page.waitForTimeout(40);
-  }
-}
 
 test('fluxo completo: novo jogo → herói → lição → portão → Aldric', async ({ page }) => {
   test.setTimeout(180_000);
@@ -52,16 +43,11 @@ test('fluxo completo: novo jogo → herói → lição → portão → Aldric', 
   await page.screenshot({ path: `${SHOTS}/40-scroll.png` });
   await page.getByRole('button', { name: 'Voltar' }).click();
 
-  // Até o portão: um passo à direita e dez para cima
+  // Até o portão: contorna o poço e sobe pela rua de pedras
   await expect(page.locator('.village-hud')).toBeVisible();
   await page.waitForTimeout(300);
-  await step(page, 'ArrowRight');
-  // sobe até o portão aparecer na dica (robusto a variações de tempo)
-  for (let i = 0; i < 16; i++) {
-    if ((await page.locator('.village-hint').allTextContents()).join('').includes('Portão')) break;
-    await step(page, 'ArrowUp');
-    await page.waitForTimeout(120);
-  }
+  await walkTo(page, 12, 3);
+  await face(page, 'ArrowUp');
   await expect(page.locator('.village-hint')).toContainText('Portão');
   await page.screenshot({ path: `${SHOTS}/41-gate.png` });
   await page.keyboard.press('Enter');
